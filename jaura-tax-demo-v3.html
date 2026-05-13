@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JauraTax — Live Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── NAV BAR ── */
+    #demo-nav {
+      flex-shrink: 0;
+      background: #0c0e16;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 20px;
+      height: 48px;
+      border-bottom: 1px solid #1e2235;
+      box-shadow: 0 1px 12px rgba(0,0,0,0.5);
+    }
+
+    .demo-logo {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.3px;
+      margin-right: 18px;
+      white-space: nowrap;
+    }
+    .demo-logo span { color: #818cf8; }
+
+    .nav-tab {
+      background: transparent;
+      color: #64748b;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      white-space: nowrap;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-tab:hover {
+      background: #1e2235;
+      color: #cbd5e1;
+    }
+
+    .nav-tab.active {
+      background: #3730a3;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .demo-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #475569;
+      font-size: 12px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── SCREEN AREA ── */
+    #screens-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: #171614;
+    }
+
+    .screen-panel {
+      position: absolute;
+      inset: 0;
+      display: none;
+    }
+
+    .screen-panel.active {
+      display: block;
+    }
+
+    .demo-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <div id="demo-nav">
+    <div class="demo-logo">Jaura<span>Tax</span></div>
+    <button class="nav-tab" onclick="showScreen('dashboard')" id="tab-dashboard">📊 Dashboard</button>
+<button class="nav-tab" onclick="showScreen('reminders')" id="tab-reminders">🔔 Reminders</button>
+<button class="nav-tab" onclick="showScreen('clients')" id="tab-clients">👥 Clients</button>
+<button class="nav-tab" onclick="showScreen('portal')" id="tab-portal">📤 Client Portal</button>
+
+    <div class="demo-badge">
+      <div class="live-dot"></div>
+      Demo Mode
+    </div>
+  </div>
+
+  <div id="screens-wrapper">
+    
+    <div class="screen-panel" id="screen-dashboard">
+      <iframe srcdoc="<!DOCTYPE html>
+
+<html data-theme=&quot;dark&quot; lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;utf-8&quot;/>
+<meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/>
+<title>JauraTax — CPA Dashboard</title>
+<link href=&quot;https://fonts.googleapis.com&quot; rel=&quot;preconnect&quot;/>
+<link crossorigin=&quot;&quot; href=&quot;https://fonts.gstatic.com&quot; rel=&quot;preconnect&quot;/>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@300..700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/>
+<style>
+  :root,[data-theme=&quot;light&quot;]{
+    --color-bg:#f7f6f2;--color-surface:#f9f8f5;--color-surface-2:#fbfbf9;
+    --color-surface-offset:#f3f0ec;--color-surface-dynamic:#e6e4df;
+    --color-divider:#dcd9d5;--color-border:#d4d1ca;
+    --color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;
+    --color-primary:#01696f;--color-primary-hover:#0c4e54;
+    --color-primary-highlight:#cedcd8;
+    --color-success:#437a22;--color-success-highlight:#d4dfcc;
+    --color-error:#a12c7b;--color-error-highlight:#e0ced7;
+    --color-warning:#964219;--color-warning-highlight:#ddcfc6;
+    --radius-sm:0.375rem;--radius-md:0.5rem;--radius-lg:0.75rem;--radius-full:9999px;
+    --shadow-sm:0 1px 2px oklch(0.2 0.01 80/0.06);
+    --shadow-md:0 4px 12px oklch(0.2 0.01 80/0.08);
+    --text-xs:clamp(0.75rem,0.7rem + 0.25vw,0.875rem);
+    --text-sm:clamp(0.875rem,0.8rem + 0.35vw,1rem);
+    --text-base:clamp(1rem,0.95rem + 0.25vw,1.125rem);
+    --text-lg:clamp(1.125rem,1rem + 0.75vw,1.5rem);
+    --text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);
+    --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;
+    --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;
+    --space-12:3rem;--space-16:4rem;
+    --font-body:'Inter','Helvetica Neue',sans-serif;
+    --transition-interactive:180ms cubic-bezier(0.16,1,0.3,1);
+  }
+  [data-theme=&quot;dark&quot;]{
+    --color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#201f1d;
+    --color-surface-offset:#1d1c1a;--color-surface-dynamic:#2d2c2a;
+    --color-divider:#262523;--color-border:#393836;
+    --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+    --color-primary:#4f98a3;--color-primary-hover:#227f8b;
+    --color-primary-highlight:#313b3b;
+    --color-success:#6daa45;--color-success-highlight:#3a4435;
+    --color-error:#d163a7;--color-error-highlight:#4c3d46;
+    --color-warning:#bb653b;--color-warning-highlight:#564942;
+    --shadow-sm:0 1px 2px oklch(0 0 0/0.2);
+    --shadow-md:0 4px 12px oklch(0 0 0/0.3);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{font-family:var(--font-body);font-size:var(--text-sm);color:var(--color-text);background:var(--color-bg);-webkit-font-smoothing:antialiased}
+  button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+  table{border-collapse:collapse;width:100%}
+  a,button{transition:color var(--transition-interactive),background var(--transition-interactive),border-color var(--transition-interactive),box-shadow var(--transition-interactive)}
+  :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+  .app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100dvh}
+  .sidebar{grid-row:1/-1;overflow-y:auto;overscroll-behavior:contain;background:var(--color-surface);border-right:1px solid var(--color-border);display:flex;flex-direction:column;padding:var(--space-6) var(--space-4)}
+  .header{grid-column:2;background:var(--color-surface);border-bottom:1px solid var(--color-border);padding:0 var(--space-6);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+  .main{grid-column:2;overflow-y:auto;overscroll-behavior:contain;padding:var(--space-8) var(--space-6)}
+  .logo{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-8)}
+  .logo-name{font-size:var(--text-base);font-weight:700;letter-spacing:-0.02em}
+  .nav-label{font-size:var(--text-xs);font-weight:600;color:var(--color-text-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-2);margin-top:var(--space-6);padding:0 var(--space-3)}
+  .nav-label:first-of-type{margin-top:0}
+  .nav-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);font-size:var(--text-sm);color:var(--color-text-muted);cursor:pointer;user-select:none;text-decoration:none}
+  .nav-item:hover{background:var(--color-surface-offset);color:var(--color-text)}
+  .nav-item.active{background:var(--color-primary-highlight);color:var(--color-primary);font-weight:600}
+  .nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.7}
+  .nav-item.active svg{opacity:1}
+  .sidebar-footer{margin-top:auto;padding-top:var(--space-6);border-top:1px solid var(--color-border)}
+  .user-row{display:flex;align-items:center;gap:var(--space-3)}
+  .user-avatar{width:32px;height:32px;border-radius:var(--radius-full);background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:700;flex-shrink:0}
+  .user-info{flex:1;min-width:0}
+  .user-name{font-size:var(--text-sm);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .user-role{font-size:var(--text-xs);color:var(--color-text-muted)}
+  .breadcrumb{font-size:var(--text-sm);color:var(--color-text-muted)}
+  .breadcrumb span{color:var(--color-text);font-weight:600}
+  .header-right{display:flex;align-items:center;gap:var(--space-2)}
+  .icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--color-text-muted)}
+  .icon-btn:hover{background:var(--color-surface-offset);color:var(--color-text)}
+  .btn{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-4);border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:600;cursor:pointer;border:none;transition:background var(--transition-interactive),box-shadow var(--transition-interactive),transform 80ms}
+  .btn:active{transform:scale(0.98)}
+  .btn-primary{background:var(--color-primary);color:#fff}
+  .btn-primary:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-sm)}
+  .btn-ghost{background:transparent;color:var(--color-text-muted);border:1px solid var(--color-border)}
+  .btn-ghost:hover{background:var(--color-surface-offset);color:var(--color-text)}
+  .btn svg{width:15px;height:15px}
+  .page-title{font-size:var(--text-xl);font-weight:700;letter-spacing:-.02em;margin-bottom:var(--space-2)}
+  .page-subtitle{font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-8)}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-8)}
+  .kpi-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-sm)}
+  .kpi-label{font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--space-3)}
+  .kpi-value{font-size:clamp(1.5rem,1.2rem+0.8vw,2rem);font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums lining-nums;line-height:1;margin-bottom:var(--space-2)}
+  .kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:var(--text-xs);font-weight:600;padding:2px 8px;border-radius:var(--radius-full)}
+  .kpi-delta.up{background:var(--color-success-highlight);color:var(--color-success)}
+  .kpi-delta.down{background:var(--color-error-highlight);color:var(--color-error)}
+  .kpi-delta.neutral{background:var(--color-surface-offset);color:var(--color-text-muted)}
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);flex-wrap:wrap;gap:var(--space-3)}
+  .section-title{font-size:var(--text-base);font-weight:700}
+  .section-actions{display:flex;align-items:center;gap:var(--space-2)}
+  .search-input{padding:var(--space-2) var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-surface);color:var(--color-text);width:200px;outline:none}
+  .search-input:focus{border-color:var(--color-primary)}
+  .table-wrap{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+  thead th{font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.06em;padding:var(--space-3) var(--space-4);text-align:left;background:var(--color-surface-offset);border-bottom:1px solid var(--color-border);white-space:nowrap}
+  tbody tr{border-bottom:1px solid var(--color-divider);transition:background var(--transition-interactive)}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:var(--color-surface-offset)}
+  tbody td{padding:var(--space-3) var(--space-4);font-size:var(--text-sm);font-variant-numeric:tabular-nums;vertical-align:middle}
+  .client-name{font-weight:600}
+  .client-email{font-size:var(--text-xs);color:var(--color-text-muted);margin-top:2px}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;white-space:nowrap}
+  .badge::before{content:'';width:6px;height:6px;border-radius:var(--radius-full);flex-shrink:0}
+  .badge-complete{background:var(--color-success-highlight);color:var(--color-success)}
+  .badge-complete::before{background:var(--color-success)}
+  .badge-missing{background:var(--color-error-highlight);color:var(--color-error)}
+  .badge-missing::before{background:var(--color-error)}
+  .row-action{padding:var(--space-1) var(--space-3);border-radius:var(--radius-sm);font-size:var(--text-xs);font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--color-text-muted)}
+  .row-action:hover{background:var(--color-surface-dynamic);color:var(--color-text)}
+  .reminder-banner{background:var(--color-warning-highlight);border:1px solid var(--color-warning);border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-6);flex-wrap:wrap}
+  .reminder-banner-left{display:flex;align-items:center;gap:var(--space-3)}
+  .reminder-banner-left svg{width:20px;height:20px;color:var(--color-warning);flex-shrink:0}
+  .reminder-banner-text{font-size:var(--text-sm);font-weight:600}
+  .reminder-banner-sub{font-size:var(--text-xs);color:var(--color-text-muted)}
+  .filter-tabs{display:flex;gap:2px;background:var(--color-surface-offset);border-radius:var(--radius-lg);padding:3px}
+  .filter-tab{padding:4px 12px;border-radius:calc(var(--radius-lg) - 3px);font-size:var(--text-xs);font-weight:600;cursor:pointer;color:var(--color-text-muted);transition:background var(--transition-interactive),color var(--transition-interactive);white-space:nowrap}
+  .filter-tab.active{background:var(--color-surface);color:var(--color-text);box-shadow:var(--shadow-sm)}
+  .count-chip{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:var(--radius-full);font-size:10px;font-weight:700;margin-left:4px;padding:0 4px}
+  .toast-container{position:fixed;bottom:var(--space-6);right:var(--space-6);z-index:1000;display:flex;flex-direction:column;gap:var(--space-2);pointer-events:none}
+  .toast{background:var(--color-text);color:var(--color-bg);padding:var(--space-3) var(--space-5);border-radius:var(--radius-lg);font-size:var(--text-sm);font-weight:500;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:var(--space-3);pointer-events:all;animation:slideIn 200ms cubic-bezier(0.16,1,0.3,1) forwards;max-width:380px}
+  .toast.removing{animation:slideOut 200ms cubic-bezier(0.16,1,0.3,1) forwards}
+  .toast svg{width:16px;height:16px;flex-shrink:0}
+  @keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(120%);opacity:0}}
+</style>
+</head>
+<body>
+<div class=&quot;app&quot;>
+<aside class=&quot;sidebar&quot;>
+<div class=&quot;logo&quot;>
+<svg aria-label=&quot;JauraTax logo&quot; fill=&quot;none&quot; height=&quot;32&quot; viewbox=&quot;0 0 32 32&quot; width=&quot;32&quot;>
+<rect fill=&quot;var(--color-primary)&quot; height=&quot;32&quot; rx=&quot;8&quot; width=&quot;32&quot;></rect>
+<path d=&quot;M8 10h16&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path>
+<path d=&quot;M12 10v10&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path>
+<circle cx=&quot;21&quot; cy=&quot;21&quot; r=&quot;4&quot; stroke=&quot;white&quot; stroke-width=&quot;1.5&quot;></circle>
+<path d=&quot;M19.5 21l1 1 2-2&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;1.5&quot;></path>
+</svg>
+<span class=&quot;logo-name&quot;>JauraTax</span>
+</div>
+<span class=&quot;nav-label&quot;>Main</span>
+<a class=&quot;nav-item active&quot; href=&quot;#&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;3&quot; y=&quot;3&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;14&quot; y=&quot;3&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;3&quot; y=&quot;14&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;14&quot; y=&quot;14&quot;></rect></svg>Dashboard
+    </a>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Clients');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2&quot;></path><circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;4&quot;></circle><path d=&quot;M23 21v-2a4 4 0 0 0-3-3.87&quot;></path><path d=&quot;M16 3.13a4 4 0 0 1 0 7.75&quot;></path></svg>Clients
+    </a>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Documents');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z&quot;></path><polyline points=&quot;14 2 14 8 20 8&quot;></polyline></svg>Documents
+    </a>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Reminders');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.55-.55a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16.92z&quot;></path></svg>Reminders
+    </a>
+<span class=&quot;nav-label&quot;>Reports</span>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Analytics');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><line x1=&quot;18&quot; x2=&quot;18&quot; y1=&quot;20&quot; y2=&quot;10&quot;></line><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;20&quot; y2=&quot;4&quot;></line><line x1=&quot;6&quot; x2=&quot;6&quot; y1=&quot;20&quot; y2=&quot;14&quot;></line></svg>Analytics
+    </a>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Settings');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;></circle><path d=&quot;M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14&quot;></path></svg>Settings
+    </a>
+<div class=&quot;sidebar-footer&quot;>
+<div class=&quot;user-row&quot;>
+<div class=&quot;user-avatar&quot;>SJ</div>
+<div class=&quot;user-info&quot;>
+<div class=&quot;user-name&quot;>Sahil Jaura</div>
+<div class=&quot;user-role&quot;>Admin</div>
+</div>
+<button aria-label=&quot;Toggle theme&quot; class=&quot;icon-btn&quot; data-theme-toggle=&quot;&quot; style=&quot;width:28px;height:28px&quot;>
+<svg fill=&quot;none&quot; height=&quot;15&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;15&quot;><path d=&quot;M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z&quot;></path></svg>
+</button>
+</div>
+</div>
+</aside>
+<header class=&quot;header&quot;>
+<div class=&quot;breadcrumb&quot;>JauraTax / <span>Dashboard</span></div>
+<div class=&quot;header-right&quot;>
+<button aria-label=&quot;Notifications&quot; class=&quot;icon-btn&quot;>
+<svg fill=&quot;none&quot; height=&quot;18&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;18&quot;><path d=&quot;M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9&quot;></path><path d=&quot;M13.73 21a2 2 0 0 1-3.46 0&quot;></path></svg>
+</button>
+<button class=&quot;btn btn-primary&quot; onclick=&quot;sendReminders()&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;22 2 15 22 11 13 2 9 22 2&quot;></polyline></svg>
+        Send Reminders
+      </button>
+</div>
+</header>
+<main class=&quot;main&quot;>
+<h1 class=&quot;page-title&quot;>Client Dashboard</h1>
+<p class=&quot;page-subtitle&quot;>Tax Season 2026  ·  10 active clients  ·  Last updated just now</p>
+<div class=&quot;kpi-grid&quot;>
+<div class=&quot;kpi-card&quot;>
+<div class=&quot;kpi-label&quot;>Total Clients</div>
+<div class=&quot;kpi-value&quot;>10</div>
+<span class=&quot;kpi-delta neutral&quot;>Tax Season 2026</span>
+</div>
+<div class=&quot;kpi-card&quot;>
+<div class=&quot;kpi-label&quot;>Documents Complete</div>
+<div class=&quot;kpi-value&quot; id=&quot;kpi-complete&quot; style=&quot;color:var(--color-success)&quot;>8</div>
+<span class=&quot;kpi-delta up&quot;>↑ 80% completion rate</span>
+</div>
+<div class=&quot;kpi-card&quot;>
+<div class=&quot;kpi-label&quot;>Missing Documents</div>
+<div class=&quot;kpi-value&quot; id=&quot;kpi-missing&quot; style=&quot;color:var(--color-error)&quot;>2</div>
+<span class=&quot;kpi-delta down&quot;>Action needed</span>
+</div>
+<div class=&quot;kpi-card&quot;>
+<div class=&quot;kpi-label&quot;>Hours Saved</div>
+<div class=&quot;kpi-value&quot; style=&quot;color:var(--color-primary)&quot;>22</div>
+<span class=&quot;kpi-delta up&quot;>↑ vs manual follow-up</span>
+</div>
+</div>
+<div class=&quot;reminder-banner&quot; id=&quot;alert-banner&quot;>
+<div class=&quot;reminder-banner-left&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;></circle><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;8&quot; y2=&quot;12&quot;></line><line x1=&quot;12&quot; x2=&quot;12.01&quot; y1=&quot;16&quot; y2=&quot;16&quot;></line></svg>
+<div>
+<div class=&quot;reminder-banner-text&quot;>2 clients are still missing required documents</div>
+<div class=&quot;reminder-banner-sub&quot;>Last reminder sent 3 days ago — hit &quot;Send Reminders&quot; to automate follow-up instantly</div>
+</div>
+</div>
+<button class=&quot;btn btn-ghost&quot; onclick=&quot;sendReminders()&quot; style=&quot;flex-shrink:0;border-color:var(--color-warning);color:var(--color-warning)&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;22 2 15 22 11 13 2 9 22 2&quot;></polyline></svg>
+        Send Now
+      </button>
+</div>
+<div class=&quot;section-header&quot;>
+<div style=&quot;display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap&quot;>
+<h2 class=&quot;section-title&quot;>Client Files</h2>
+<div class=&quot;filter-tabs&quot;>
+<div class=&quot;filter-tab active&quot; onclick=&quot;filterClients('all',this)&quot;>All <span class=&quot;count-chip&quot; style=&quot;background:var(--color-surface-dynamic);color:var(--color-text-muted)&quot;>10</span></div>
+<div class=&quot;filter-tab&quot; onclick=&quot;filterClients('complete',this)&quot;>Complete <span class=&quot;count-chip&quot; style=&quot;background:var(--color-success-highlight);color:var(--color-success)&quot;>8</span></div>
+<div class=&quot;filter-tab&quot; onclick=&quot;filterClients('missing',this)&quot;>Missing Docs <span class=&quot;count-chip&quot; style=&quot;background:var(--color-error-highlight);color:var(--color-error)&quot;>2</span></div>
+</div>
+</div>
+<div class=&quot;section-actions&quot;>
+<input class=&quot;search-input&quot; oninput=&quot;searchClients(this.value)&quot; placeholder=&quot;Search clients...&quot; type=&quot;search&quot;/>
+<button class=&quot;btn btn-ghost&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;></path><polyline points=&quot;7 10 12 15 17 10&quot;></polyline><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;15&quot; y2=&quot;3&quot;></line></svg>
+          Export CSV
+        </button>
+</div>
+</div>
+<div class=&quot;table-wrap&quot;>
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Status</th>
+<th>Missing Documents</th>
+<th>Last Reminded</th>
+<th>Days Waiting</th>
+<th></th>
+</tr>
+</thead>
+<tbody id=&quot;client-tbody&quot;></tbody>
+</table>
+</div>
+</main>
+</div>
+<div class=&quot;toast-container&quot; id=&quot;toast-container&quot;></div>
+<script>
+const clients=[
+  {id:1,name:&quot;Priya Sharma&quot;,email:&quot;priya.sharma@gmail.com&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Apr 2&quot;,days:0},
+  {id:2,name:&quot;Michael Chen&quot;,email:&quot;m.chen@outlook.com&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Mar 28&quot;,days:0},
+  {id:3,name:&quot;Raj Patel&quot;,email:&quot;raj.patel@hotmail.com&quot;,status:&quot;missing&quot;,missing:[&quot;T4 Slip&quot;,&quot;NOA 2024&quot;],lastReminded:&quot;Apr 14&quot;,days:3},
+  {id:4,name:&quot;Sarah Thompson&quot;,email:&quot;s.thompson@rogers.com&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Apr 5&quot;,days:0},
+  {id:5,name:&quot;David Kim&quot;,email:&quot;david.kim@gmail.com&quot;,status:&quot;missing&quot;,missing:[&quot;T4 Slip&quot;],lastReminded:&quot;Apr 14&quot;,days:3},
+  {id:6,name:&quot;Anita Desai&quot;,email:&quot;anita.desai@gmail.com&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Apr 8&quot;,days:0},
+  {id:7,name:&quot;James Wilson&quot;,email:&quot;j.wilson@bell.ca&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Apr 1&quot;,days:0},
+  {id:8,name:&quot;Fatima Al-Hassan&quot;,email:&quot;f.alhassan@yahoo.ca&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Apr 10&quot;,days:0},
+  {id:9,name:&quot;Robert Nguyen&quot;,email:&quot;r.nguyen@gmail.com&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Apr 3&quot;,days:0},
+  {id:10,name:&quot;Linda Kowalski&quot;,email:&quot;linda.k@gmail.com&quot;,status:&quot;complete&quot;,missing:[],lastReminded:&quot;Apr 7&quot;,days:0},
+];
+let currentFilter=&quot;all&quot;,searchQuery=&quot;&quot;;
+function getInitials(n){return n.split(&quot; &quot;).map(x=>x[0]).join(&quot;&quot;).toUpperCase().slice(0,2)}
+function getColor(id){return[&quot;#01696f&quot;,&quot;#437a22&quot;,&quot;#006494&quot;,&quot;#7a39bb&quot;,&quot;#964219&quot;][id%5]}
+function renderTable(){
+  const tbody=document.getElementById(&quot;client-tbody&quot;);
+  let f=clients;
+  if(currentFilter===&quot;complete&quot;)f=clients.filter(c=>c.status===&quot;complete&quot;);
+  if(currentFilter===&quot;missing&quot;)f=clients.filter(c=>c.status===&quot;missing&quot;);
+  if(searchQuery)f=f.filter(c=>c.name.toLowerCase().includes(searchQuery.toLowerCase())||c.email.toLowerCase().includes(searchQuery.toLowerCase()));
+  if(!f.length){tbody.innerHTML='<tr><td colspan=&quot;6&quot; style=&quot;text-align:center;padding:3rem;color:var(--color-text-muted)&quot;>No clients found</td></tr>';return;}
+  tbody.innerHTML=f.map(c=>`
+    <tr>
+      <td><div style=&quot;display:flex;align-items:center;gap:12px&quot;>
+        <div style=&quot;width:32px;height:32px;border-radius:9999px;background:${getColor(c.id)};color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0&quot;>${getInitials(c.name)}</div>
+        <div><div class=&quot;client-name&quot;>${c.name}</div><div class=&quot;client-email&quot;>${c.email}</div></div>
+      </div></td>
+      <td><span class=&quot;badge badge-${c.status===&quot;complete&quot;?&quot;complete&quot;:&quot;missing&quot;}&quot;>${c.status===&quot;complete&quot;?&quot;Complete&quot;:&quot;Missing Docs&quot;}</span></td>
+      <td>${c.missing.length?'<span style=&quot;font-size:var(--text-xs);color:var(--color-error);font-weight:500&quot;>'+c.missing.join(&quot;, &quot;)+'</span>':'<span style=&quot;color:var(--color-text-faint);font-size:var(--text-xs)&quot;>—</span>'}</td>
+      <td style=&quot;color:var(--color-text-muted);font-size:var(--text-xs)&quot;>${c.lastReminded}</td>
+      <td style=&quot;font-size:var(--text-xs);font-variant-numeric:tabular-nums;color:${c.days>0?&quot;var(--color-error)&quot;:&quot;var(--color-text-faint)&quot;}&quot;>${c.days>0?c.days+&quot; days&quot;:&quot;—&quot;}</td>
+      <td style=&quot;text-align:right&quot;><button class=&quot;row-action&quot;>View File →</button></td>
+    </tr>`).join(&quot;&quot;);
+}
+function filterClients(type,el){
+  currentFilter=type;
+  document.querySelectorAll(&quot;.filter-tab&quot;).forEach(t=>t.classList.remove(&quot;active&quot;));
+  el.classList.add(&quot;active&quot;);
+  renderTable();
+}
+function searchClients(val){searchQuery=val;renderTable();}
+function sendReminders(){
+  const missing=clients.filter(c=>c.status===&quot;missing&quot;);
+  if(!missing.length){showToast(&quot;All clients are up to date!&quot;);return;}
+  missing.forEach(c=>{c.lastReminded=&quot;Just now&quot;;c.days=0;});
+  const b=document.getElementById(&quot;alert-banner&quot;);
+  if(b){b.style.opacity=&quot;0&quot;;b.style.transition=&quot;opacity 300ms&quot;;setTimeout(()=>{b.style.display=&quot;none&quot;},300);}
+  document.getElementById(&quot;kpi-missing&quot;).textContent=&quot;0&quot;;
+  document.getElementById(&quot;kpi-complete&quot;).textContent=&quot;10&quot;;
+  showToast(`✓ SMS &amp; Email reminders sent to ${missing.length} clients: ${missing.map(c=>c.name.split(&quot; &quot;)[0]).join(&quot;, &quot;)}`);
+  renderTable();
+}
+function showToast(msg){
+  const c=document.getElementById(&quot;toast-container&quot;);
+  const t=document.createElement(&quot;div&quot;);
+  t.className=&quot;toast&quot;;
+  t.innerHTML=`<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; style=&quot;width:16px;height:16px;flex-shrink:0&quot;><polyline points=&quot;20 6 9 17 4 12&quot;/></svg><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add(&quot;removing&quot;);setTimeout(()=>t.remove(),200);},3500);
+}
+(function(){
+  const t=document.querySelector(&quot;[data-theme-toggle]&quot;),r=document.documentElement;
+  let d=matchMedia(&quot;(prefers-color-scheme:dark)&quot;).matches?&quot;dark&quot;:&quot;light&quot;;
+  r.setAttribute(&quot;data-theme&quot;,d);
+  const moon='<svg width=&quot;15&quot; height=&quot;15&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><path d=&quot;M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z&quot;/></svg>';
+  const sun='<svg width=&quot;15&quot; height=&quot;15&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;5&quot;/><path d=&quot;M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42&quot;/></svg>';
+  t.innerHTML=d===&quot;dark&quot;?sun:moon;
+  t.addEventListener(&quot;click&quot;,()=>{d=d===&quot;dark&quot;?&quot;light&quot;:&quot;dark&quot;;r.setAttribute(&quot;data-theme&quot;,d);t.innerHTML=d===&quot;dark&quot;?sun:moon;});
+})();
+renderTable();
+function comingSoon(name){
+  const c=document.getElementById(&quot;toast-container&quot;);
+  const t=document.createElement(&quot;div&quot;);
+  t.className=&quot;toast&quot;;
+  t.style.background=&quot;var(--color-surface)&quot;;
+  t.style.color=&quot;var(--color-text)&quot;;
+  t.style.border=&quot;1px solid var(--color-border)&quot;;
+  t.innerHTML=`<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; style=&quot;width:16px;height:16px;flex-shrink:0;color:var(--color-primary)&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/><path d=&quot;M12 6v6l4 2&quot;/></svg><span><strong>${name}</strong> — Coming in next release</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add(&quot;removing&quot;);setTimeout(()=>t.remove(),200);},2500);
+}
+</script>
+</body>
+</html>" frameborder="0" class="demo-iframe" id="iframe-dashboard"></iframe>
+    </div>
+
+    <div class="screen-panel" id="screen-reminders">
+      <iframe srcdoc="<!DOCTYPE html>
+
+<html data-theme=&quot;dark&quot; lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;utf-8&quot;/>
+<meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/>
+<title>JauraTax — Reminder Activity Log</title>
+<link href=&quot;https://fonts.googleapis.com&quot; rel=&quot;preconnect&quot;/>
+<link crossorigin=&quot;&quot; href=&quot;https://fonts.gstatic.com&quot; rel=&quot;preconnect&quot;/>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@300..700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/>
+<style>
+  :root,[data-theme=&quot;light&quot;]{
+    --color-bg:#f7f6f2;--color-surface:#f9f8f5;
+    --color-surface-offset:#f3f0ec;--color-surface-dynamic:#e6e4df;
+    --color-divider:#dcd9d5;--color-border:#d4d1ca;
+    --color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;
+    --color-primary:#01696f;--color-primary-hover:#0c4e54;
+    --color-primary-highlight:#cedcd8;
+    --color-success:#437a22;--color-success-highlight:#d4dfcc;
+    --color-error:#a12c7b;--color-error-highlight:#e0ced7;
+    --color-warning:#964219;--color-warning-highlight:#ddcfc6;
+    --color-sms:#5b4bb5;--color-sms-highlight:#e0ddf5;
+    --color-email:#0f6ac7;--color-email-highlight:#d1e4f7;
+    --radius-sm:0.375rem;--radius-md:0.5rem;--radius-lg:0.75rem;
+    --radius-xl:1rem;--radius-full:9999px;
+    --shadow-sm:0 1px 2px oklch(0.2 0.01 80/0.06);
+    --shadow-md:0 4px 16px oklch(0.2 0.01 80/0.10);
+    --text-xs:0.75rem;--text-sm:0.875rem;--text-base:1rem;
+    --text-lg:1.125rem;--text-xl:1.375rem;--text-2xl:1.75rem;
+    --font-body:'Inter','Helvetica Neue',sans-serif;
+    --transition:180ms cubic-bezier(0.16,1,0.3,1);
+  }
+  [data-theme=&quot;dark&quot;]{
+    --color-bg:#171614;--color-surface:#1c1b19;
+    --color-surface-offset:#242320;--color-surface-dynamic:#2d2c2a;
+    --color-divider:#262523;--color-border:#393836;
+    --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+    --color-primary:#4f98a3;--color-primary-hover:#227f8b;
+    --color-primary-highlight:#1e3133;
+    --color-success:#6daa45;--color-success-highlight:#2a3a22;
+    --color-error:#d163a7;--color-error-highlight:#3a2030;
+    --color-warning:#bb653b;--color-warning-highlight:#3a2a1e;
+    --color-sms:#9b8ff0;--color-sms-highlight:#2a2640;
+    --color-email:#5499e0;--color-email-highlight:#1a2a3a;
+    --shadow-sm:0 1px 2px oklch(0 0 0/0.25);
+    --shadow-md:0 4px 16px oklch(0 0 0/0.35);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{font-family:var(--font-body);font-size:var(--text-sm);color:var(--color-text);background:var(--color-bg);-webkit-font-smoothing:antialiased}
+  button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+
+  .app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100dvh}
+
+  /* SIDEBAR */
+  .sidebar{grid-row:1/-1;overflow-y:auto;background:var(--color-surface);border-right:1px solid var(--color-border);display:flex;flex-direction:column;padding:1.5rem 1rem}
+  .logo{display:flex;align-items:center;gap:.625rem;margin-bottom:2rem}
+  .logo-name{font-size:var(--text-base);font-weight:700;letter-spacing:-.02em}
+  .nav-label{font-size:var(--text-xs);font-weight:600;color:var(--color-text-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;margin-top:1.5rem;padding:0 .75rem}
+  .nav-label:first-of-type{margin-top:0}
+  .nav-item{display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;border-radius:var(--radius-md);font-size:var(--text-sm);color:var(--color-text-muted);cursor:pointer;text-decoration:none}
+  .nav-item:hover{background:var(--color-surface-offset);color:var(--color-text)}
+  .nav-item.active{background:var(--color-primary-highlight);color:var(--color-primary);font-weight:600}
+  .nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.7}
+  .nav-item.active svg{opacity:1}
+  .sidebar-footer{margin-top:auto;padding-top:1.25rem;border-top:1px solid var(--color-border)}
+  .user-row{display:flex;align-items:center;gap:.75rem}
+  .user-avatar{width:32px;height:32px;border-radius:var(--radius-full);background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:700;flex-shrink:0}
+  .user-name{font-size:var(--text-sm);font-weight:600}
+  .user-role{font-size:var(--text-xs);color:var(--color-text-muted)}
+
+  /* HEADER */
+  .header{grid-column:2;background:var(--color-surface);border-bottom:1px solid var(--color-border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between}
+  .breadcrumb{font-size:var(--text-sm);color:var(--color-text-muted)}
+  .breadcrumb span{color:var(--color-text);font-weight:600}
+  .header-right{display:flex;align-items:center;gap:.5rem}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:600;cursor:pointer;border:none;transition:background var(--transition),box-shadow var(--transition),transform 80ms}
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--color-primary);color:#fff}
+  .btn-primary:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-sm)}
+  .btn-ghost{background:transparent;color:var(--color-text-muted);border:1px solid var(--color-border)}
+  .btn-ghost:hover{background:var(--color-surface-offset);color:var(--color-text)}
+  .btn svg{width:14px;height:14px}
+  .icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--color-text-muted)}
+  .icon-btn:hover{background:var(--color-surface-offset);color:var(--color-text)}
+
+  /* MAIN */
+  .main{grid-column:2;overflow-y:auto;overscroll-behavior:contain;padding:2rem 1.5rem}
+  .page-title{font-size:var(--text-2xl);font-weight:700;letter-spacing:-.03em;margin-bottom:.375rem}
+  .page-subtitle{font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:2rem}
+
+  /* SUMMARY CARDS */
+  .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+  .summary-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;box-shadow:var(--shadow-sm)}
+  .summary-label{font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.625rem}
+  .summary-value{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:.375rem;font-variant-numeric:tabular-nums}
+  .chip{display:inline-flex;align-items:center;gap:3px;font-size:var(--text-xs);font-weight:600;padding:2px 8px;border-radius:var(--radius-full)}
+  .chip-green{background:var(--color-success-highlight);color:var(--color-success)}
+  .chip-red{background:var(--color-error-highlight);color:var(--color-error)}
+  .chip-sms{background:var(--color-sms-highlight);color:var(--color-sms)}
+  .chip-email{background:var(--color-email-highlight);color:var(--color-email)}
+  .chip-neutral{background:var(--color-surface-offset);color:var(--color-text-muted)}
+
+  /* GRID LAYOUT */
+  .content-grid{display:block}
+
+  /* ACTIVITY LOG */
+  .panel{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm)}
+  .panel-header{padding:.875rem 1.25rem;border-bottom:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between;background:var(--color-surface-offset)}
+  .panel-title{font-size:var(--text-sm);font-weight:700}
+  .panel-body{padding:0;max-height:420px;overflow-y:auto;overscroll-behavior:contain}
+
+  /* LOG ITEMS */
+  .log-item{padding:1rem 1.25rem;border-bottom:1px solid var(--color-divider);display:flex;align-items:flex-start;gap:.875rem;transition:background var(--transition)}
+  .log-item:last-child{border-bottom:none}
+  .log-item:hover{background:var(--color-surface-offset)}
+  .log-avatar{width:34px;height:34px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:700;flex-shrink:0;color:#fff}
+  .log-content{flex:1;min-width:0}
+  .log-top{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.25rem}
+  .log-name{font-size:var(--text-sm);font-weight:600}
+  .log-time{font-size:var(--text-xs);color:var(--color-text-faint);white-space:nowrap}
+  .log-desc{font-size:var(--text-xs);color:var(--color-text-muted);line-height:1.5;margin-bottom:.5rem}
+  .log-tags{display:flex;flex-wrap:wrap;gap:.375rem}
+  .tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:var(--radius-full)}
+  .tag-sms{background:var(--color-sms-highlight);color:var(--color-sms)}
+  .tag-email{background:var(--color-email-highlight);color:var(--color-email)}
+  .tag-success{background:var(--color-success-highlight);color:var(--color-success)}
+  .tag-pending{background:var(--color-warning-highlight);color:var(--color-warning)}
+  .tag svg{width:9px;height:9px}
+
+  /* MESSAGE PREVIEW PANEL */
+  .preview-panel{display:flex;flex-direction:column;gap:1rem}
+  .preview-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm)}
+  .preview-header{padding:.75rem 1rem;border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:.5rem;background:var(--color-surface-offset)}
+  .preview-channel-icon{width:22px;height:22px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .preview-channel-icon.sms{background:var(--color-sms-highlight)}
+  .preview-channel-icon.email{background:var(--color-email-highlight)}
+  .preview-channel-icon svg{width:12px;height:12px}
+  .preview-channel-icon.sms svg{color:var(--color-sms)}
+  .preview-channel-icon.email svg{color:var(--color-email)}
+  .preview-channel-label{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-muted)}
+  .preview-body{padding:1rem}
+  .sms-bubble{background:var(--color-sms-highlight);border-radius:var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px;padding:.75rem 1rem;font-size:var(--text-sm);line-height:1.6;color:var(--color-text);max-width:240px}
+  .sms-bubble strong{color:var(--color-primary);font-weight:600}
+  .sms-meta{font-size:var(--text-xs);color:var(--color-text-faint);margin-top:.5rem;text-align:right}
+  .email-meta-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;font-size:var(--text-xs)}
+  .email-meta-label{color:var(--color-text-faint);width:36px;flex-shrink:0}
+  .email-meta-value{color:var(--color-text-muted);font-weight:500}
+  .email-subject{font-size:var(--text-sm);font-weight:700;margin:.75rem 0 .5rem}
+  .email-body{font-size:var(--text-xs);color:var(--color-text-muted);line-height:1.7;border-top:1px solid var(--color-divider);padding-top:.75rem}
+  .email-body strong{color:var(--color-text);font-weight:600}
+  .upload-link-preview{display:inline-flex;align-items:center;gap:.375rem;margin-top:.625rem;background:var(--color-primary);color:#fff;padding:5px 12px;border-radius:var(--radius-md);font-size:var(--text-xs);font-weight:600}
+  .upload-link-preview svg{width:11px;height:11px}
+
+  /* TOAST */
+  .toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+  .toast{background:var(--color-text);color:var(--color-bg);padding:.75rem 1.25rem;border-radius:var(--radius-lg);font-size:var(--text-sm);font-weight:500;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:.75rem;pointer-events:all;animation:slideIn 200ms cubic-bezier(0.16,1,0.3,1) forwards;max-width:360px}
+  .toast.removing{animation:slideOut 200ms cubic-bezier(0.16,1,0.3,1) forwards}
+  @keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(120%);opacity:0}}
+  @keyframes flashGreen{0%{border-color:var(--color-border)}40%{border-color:var(--color-success);box-shadow:0 0 0 3px var(--color-success-highlight)}100%{border-color:var(--color-border)}}
+
+  /* SEND REMINDERS MODAL */
+  .modal-overlay{position:fixed;inset:0;background:oklch(0.2 0.01 80/0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:1.75rem;width:100%;max-width:420px;box-shadow:var(--shadow-md)}
+  .modal-title{font-size:var(--text-lg);font-weight:700;margin-bottom:.375rem}
+  .modal-sub{font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:1.25rem;line-height:1.5}
+  .modal-client-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem}
+  .modal-client{display:flex;align-items:center;gap:.625rem;padding:.625rem .875rem;background:var(--color-surface-offset);border-radius:var(--radius-md);font-size:var(--text-sm)}
+  .modal-client-avatar{width:26px;height:26px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:#fff}
+  .modal-client-name{font-weight:600;flex:1}
+  .modal-channels{display:flex;gap:.375rem}
+  .modal-footer{display:flex;gap:.625rem;justify-content:flex-end}
+</style>
+</head>
+<body>
+<div class=&quot;app&quot;>
+<!-- SIDEBAR -->
+<aside class=&quot;sidebar&quot;>
+<div class=&quot;logo&quot;>
+<svg fill=&quot;none&quot; height=&quot;28&quot; viewbox=&quot;0 0 32 32&quot; width=&quot;28&quot;>
+<rect fill=&quot;var(--color-primary)&quot; height=&quot;32&quot; rx=&quot;8&quot; width=&quot;32&quot;></rect>
+<path d=&quot;M8 10h16&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path>
+<path d=&quot;M12 10v10&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path>
+<circle cx=&quot;21&quot; cy=&quot;21&quot; r=&quot;4&quot; stroke=&quot;white&quot; stroke-width=&quot;1.5&quot;></circle>
+<path d=&quot;M19.5 21l1 1 2-2&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;1.5&quot;></path>
+</svg>
+<span class=&quot;logo-name&quot;>JauraTax</span>
+</div>
+<span class=&quot;nav-label&quot;>Main</span>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Dashboard');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;3&quot; y=&quot;3&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;14&quot; y=&quot;3&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;3&quot; y=&quot;14&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;14&quot; y=&quot;14&quot;></rect></svg>Dashboard
+    </a>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Clients');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2&quot;></path><circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;4&quot;></circle></svg>Clients
+    </a>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Documents');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z&quot;></path><polyline points=&quot;14 2 14 8 20 8&quot;></polyline></svg>Documents
+    </a>
+<a class=&quot;nav-item active&quot; href=&quot;#&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.55-.55a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16.92z&quot;></path></svg>Reminders
+    </a>
+<span class=&quot;nav-label&quot;>Reports</span>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Analytics');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><line x1=&quot;18&quot; x2=&quot;18&quot; y1=&quot;20&quot; y2=&quot;10&quot;></line><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;20&quot; y2=&quot;4&quot;></line><line x1=&quot;6&quot; x2=&quot;6&quot; y1=&quot;20&quot; y2=&quot;14&quot;></line></svg>Analytics
+    </a>
+<a class=&quot;nav-item&quot; href=&quot;#&quot; onclick=&quot;comingSoon('Settings');return false;&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;></circle><path d=&quot;M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14&quot;></path></svg>Settings
+    </a>
+<div class=&quot;sidebar-footer&quot;>
+<div class=&quot;user-row&quot;>
+<div class=&quot;user-avatar&quot;>JA</div>
+<div>
+<div class=&quot;user-name&quot;>Jaura CPA</div>
+<div class=&quot;user-role&quot;>Admin</div>
+</div>
+<button aria-label=&quot;Toggle theme&quot; class=&quot;icon-btn&quot; data-theme-toggle=&quot;&quot; style=&quot;width:28px;height:28px;margin-left:auto&quot;>
+<svg fill=&quot;none&quot; height=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;14&quot;><path d=&quot;M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z&quot;></path></svg>
+</button>
+</div>
+</div>
+</aside>
+<!-- HEADER -->
+<header class=&quot;header&quot;>
+<div class=&quot;breadcrumb&quot;>JauraTax / <span>Reminders</span></div>
+<div class=&quot;header-right&quot;>
+<button class=&quot;icon-btn&quot;>
+<svg fill=&quot;none&quot; height=&quot;18&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;18&quot;><path d=&quot;M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9&quot;></path><path d=&quot;M13.73 21a2 2 0 0 1-3.46 0&quot;></path></svg>
+</button>
+<button class=&quot;btn btn-primary&quot; onclick=&quot;document.getElementById('send-modal').classList.add('open')&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;22 2 15 22 11 13 2 9 22 2&quot;></polyline></svg>
+        Send Reminders
+      </button>
+</div>
+</header>
+<!-- MAIN -->
+<main class=&quot;main&quot;>
+<h1 class=&quot;page-title&quot;>Reminder Activity</h1>
+<p class=&quot;page-subtitle&quot;>Automated SMS &amp;amp; Email follow-ups sent to clients with missing documents</p>
+<!-- SUMMARY CARDS -->
+<div class=&quot;summary-grid&quot;>
+<div class=&quot;summary-card&quot;>
+<div class=&quot;summary-label&quot;>Total Sent Today</div>
+<div class=&quot;summary-value&quot; id=&quot;total-sent&quot; style=&quot;color:var(--color-primary)&quot;>4</div>
+<span class=&quot;chip chip-green&quot;>↑ 2 reminders</span>
+</div>
+<div class=&quot;summary-card&quot;>
+<div class=&quot;summary-label&quot;>SMS Delivered</div>
+<div class=&quot;summary-value&quot; id=&quot;sms-sent&quot; style=&quot;color:var(--color-sms)&quot;>2</div>
+<span class=&quot;chip chip-sms&quot;>Via Twilio</span>
+</div>
+<div class=&quot;summary-card&quot;>
+<div class=&quot;summary-label&quot;>Emails Delivered</div>
+<div class=&quot;summary-value&quot; id=&quot;email-sent&quot; style=&quot;color:var(--color-email)&quot;>2</div>
+<span class=&quot;chip chip-email&quot;>Via Make.com</span>
+</div>
+<div class=&quot;summary-card&quot;>
+<div class=&quot;summary-label&quot;>Awaiting Response</div>
+<div class=&quot;summary-value&quot; id=&quot;awaiting&quot; style=&quot;color:var(--color-warning)&quot;>2</div>
+<span class=&quot;chip chip-neutral&quot;>Clients pending</span>
+</div>
+</div>
+<!-- CONTENT GRID -->
+<div class=&quot;content-grid&quot;>
+<!-- ACTIVITY LOG -->
+<div class=&quot;panel&quot;>
+<div class=&quot;panel-header&quot;>
+<span class=&quot;panel-title&quot;>Reminder Log</span>
+<span class=&quot;chip chip-neutral&quot; id=&quot;log-count&quot;>4 events</span>
+</div>
+<div class=&quot;panel-body&quot; id=&quot;log-body&quot;>
+<!-- Populated by JS -->
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- SEND MODAL -->
+<div class=&quot;modal-overlay&quot; id=&quot;send-modal&quot;>
+<div class=&quot;modal&quot;>
+<div class=&quot;modal-title&quot;>Send Automated Reminders</div>
+<div class=&quot;modal-sub&quot;>The following clients have missing documents. JauraTax will send them an SMS + Email with a secure upload link right now.</div>
+<div class=&quot;modal-client-list&quot;>
+<div class=&quot;modal-client&quot;>
+<div class=&quot;modal-client-avatar&quot; style=&quot;background:#01696f&quot;>RP</div>
+<span class=&quot;modal-client-name&quot;>Raj Patel</span>
+<div class=&quot;modal-channels&quot;>
+<span class=&quot;tag tag-sms&quot;>SMS</span>
+<span class=&quot;tag tag-email&quot;>Email</span>
+</div>
+</div>
+<div class=&quot;modal-client&quot;>
+<div class=&quot;modal-client-avatar&quot; style=&quot;background:#437a22&quot;>DK</div>
+<span class=&quot;modal-client-name&quot;>David Kim</span>
+<div class=&quot;modal-channels&quot;>
+<span class=&quot;tag tag-sms&quot;>SMS</span>
+<span class=&quot;tag tag-email&quot;>Email</span>
+</div>
+</div>
+</div>
+<div class=&quot;modal-footer&quot;>
+<button class=&quot;btn btn-ghost&quot; onclick=&quot;document.getElementById('send-modal').classList.remove('open')&quot;>Cancel</button>
+<button class=&quot;btn btn-primary&quot; onclick=&quot;confirmSend()&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;22 2 15 22 11 13 2 9 22 2&quot;></polyline></svg>
+        Confirm &amp;amp; Send
+      </button>
+</div>
+</div>
+</div>
+<!-- PREVIEW MODAL -->
+<div class=&quot;modal-overlay&quot; id=&quot;preview-modal&quot;>
+<div class=&quot;modal&quot; style=&quot;max-width:480px&quot;>
+<div style=&quot;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem&quot;>
+<div class=&quot;modal-title&quot; id=&quot;preview-modal-title&quot;>Message Preview</div>
+<button class=&quot;icon-btn&quot; onclick=&quot;document.getElementById('preview-modal').classList.remove('open')&quot; style=&quot;flex-shrink:0&quot;>
+<svg fill=&quot;none&quot; height=&quot;16&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;16&quot;><line x1=&quot;18&quot; x2=&quot;6&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line><line x1=&quot;6&quot; x2=&quot;18&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line></svg>
+</button>
+</div>
+<!-- SMS BUBBLE -->
+<div style=&quot;margin-bottom:1rem&quot;>
+<div style=&quot;display:flex;align-items:center;gap:.5rem;margin-bottom:.625rem&quot;>
+<div class=&quot;preview-channel-icon sms&quot; style=&quot;width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:var(--color-sms-highlight)&quot;>
+<svg fill=&quot;none&quot; height=&quot;12&quot; stroke=&quot;var(--color-sms)&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;12&quot;><path d=&quot;M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z&quot;></path></svg>
+</div>
+<span style=&quot;font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-muted)&quot;>SMS — Sent via Make.com</span>
+</div>
+<div class=&quot;sms-bubble&quot; id=&quot;preview-sms-text&quot; style=&quot;font-size:var(--text-sm);line-height:1.6;background:var(--color-sms-highlight);border-radius:12px 12px 12px 4px;padding:.75rem 1rem;max-width:300px&quot;></div>
+<div id=&quot;preview-sms-meta&quot; style=&quot;font-size:var(--text-xs);color:var(--color-text-faint);margin-top:.375rem;text-align:right&quot;></div>
+</div>
+<!-- EMAIL -->
+<div style=&quot;background:var(--color-surface-offset);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1rem&quot;>
+<div style=&quot;display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem&quot;>
+<div style=&quot;width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:var(--color-email-highlight)&quot;>
+<svg fill=&quot;none&quot; height=&quot;12&quot; stroke=&quot;var(--color-email)&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;12&quot;><path d=&quot;M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z&quot;></path><polyline points=&quot;22,6 12,13 2,6&quot;></polyline></svg>
+</div>
+<span style=&quot;font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-muted)&quot;>Email — Sent via Make.com</span>
+</div>
+<div style=&quot;font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:3px&quot;><span style=&quot;color:var(--color-text-faint);width:36px;display:inline-block&quot;>From:</span> noreply@jauratax.com</div>
+<div style=&quot;font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:.625rem&quot;><span style=&quot;color:var(--color-text-faint);width:36px;display:inline-block&quot;>To:</span> <span id=&quot;preview-email-to&quot;></span></div>
+<div id=&quot;preview-email-subject&quot; style=&quot;font-size:var(--text-sm);font-weight:700;margin-bottom:.5rem;border-top:1px solid var(--color-divider);padding-top:.625rem&quot;></div>
+<div id=&quot;preview-email-body&quot; style=&quot;font-size:var(--text-xs);color:var(--color-text-muted);line-height:1.7&quot;></div>
+<div style=&quot;margin-top:.75rem&quot;>
+<span style=&quot;display:inline-flex;align-items:center;gap:.375rem;background:var(--color-primary);color:#fff;padding:5px 12px;border-radius:var(--radius-md);font-size:var(--text-xs);font-weight:600&quot;>
+<svg fill=&quot;none&quot; height=&quot;11&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;11&quot;><polyline points=&quot;16 16 12 12 8 16&quot;></polyline><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;12&quot; y2=&quot;21&quot;></line></svg>
+          Upload My Documents
+        </span>
+</div>
+</div>
+<div style=&quot;margin-top:1.25rem;text-align:right&quot;>
+<button class=&quot;btn btn-ghost&quot; onclick=&quot;document.getElementById('preview-modal').classList.remove('open')&quot;>Close</button>
+</div>
+</div>
+</div>
+<div class=&quot;toast-container&quot; id=&quot;toast-container&quot;></div>
+<script>
+var colors = {RP:'#01696f',DK:'#437a22',MP:'#006494',ST:'#7a39bb'};
+var logData = [
+  {initials:'RP',name:'Raj Patel',   email:'raj.patel@hotmail.com',  missing:['T4 Slip','NOA 2024'],   time:'Today 2:47 PM',   desc:'Follow-up #2 — T4 Slip &amp; NOA 2024 still missing. Make.com triggered.',tags:['sms','email','success']},
+  {initials:'DK',name:'David Kim',   email:'david.kim@gmail.com',    missing:['T4 Slip'],              time:'Today 2:47 PM',   desc:'Follow-up #2 — T4 Slip still missing. Make.com triggered.',             tags:['sms','email','success']},
+  {initials:'AN',name:'Amir Nasser', email:'amir.n@outlook.com',     missing:['T4A Slip'],             time:'Today 2:47 PM',   desc:'Initial reminder — T4A Slip not yet uploaded.',                          tags:['sms','email','success']},
+  {initials:'LB',name:'Lisa Bouchard',email:'lisa.b@gmail.com',      missing:['RRSP Receipt'],         time:'Today 2:47 PM',   desc:'Follow-up #1 — RRSP receipt still missing.',                             tags:['sms','email','pending']},
+  {initials:'TS',name:'Tyler Singh',  email:'tyler.s@bell.ca',       missing:['T4 Slip','T5 Slip'],    time:'Apr 14, 11:03 AM',desc:'Initial reminder sent — T4 &amp; T5 slips missing.',                         tags:['sms','email','pending']},
+  {initials:'MN',name:'Maria Novak',  email:'m.novak@rogers.com',    missing:['NOA 2024'],             time:'Apr 14, 11:03 AM',desc:'Initial reminder sent — Notice of Assessment not uploaded.',               tags:['sms','email','pending']},
+  {initials:'JO',name:'James Okafor', email:'j.okafor@yahoo.ca',     missing:['T4 Slip'],              time:'Apr 13, 9:15 AM', desc:'Follow-up #1 — no response in 48 hours.',                                tags:['sms','email','pending']},
+  {initials:'SC',name:'Sophie Chen',  email:'sophie.c@gmail.com',    missing:['T4 Slip','RRSP Receipt'],time:'Apr 12, 3:30 PM',desc:'Initial reminder — T4 Slip and RRSP receipt required.',                  tags:['sms','email','success']},
+];
+
+function tagHTML(t) {
+  if (t === 'sms') return '<span class=&quot;tag tag-sms&quot;>SMS</span>';
+  if (t === 'email') return '<span class=&quot;tag tag-email&quot;>Email</span>';
+  if (t === 'success') return '<span class=&quot;tag tag-success&quot;>✓ Delivered</span>';
+  if (t === 'pending') return '<span class=&quot;tag tag-pending&quot;>⏳ Awaiting reply</span>';
+  return '';
+}
+
+function renderLog(data) {
+  var container = document.getElementById('log-body');
+  if (!container) return;
+  var html = '';
+  for (var i = 0; i < data.length; i++) {
+    var item = data[i];
+    var bg = colors[item.initials] || '#01696f';
+    var tagsHtml = '';
+    for (var j = 0; j < item.tags.length; j++) {
+      tagsHtml += tagHTML(item.tags[j]);
+    }
+    html += '<div class=&quot;log-item&quot; style=&quot;align-items:center&quot;>';
+    html += '<div class=&quot;log-avatar&quot; style=&quot;background:' + bg + '&quot;>' + item.initials + '</div>';
+    html += '<div class=&quot;log-content&quot;>';
+    html += '<div class=&quot;log-top&quot;><span class=&quot;log-name&quot;>' + item.name + '</span><span class=&quot;log-time&quot;>' + item.time + '</span></div>';
+    html += '<div class=&quot;log-desc&quot;>' + item.desc + '</div>';
+    html += '<div class=&quot;log-tags&quot; style=&quot;margin-top:.375rem&quot;>' + tagsHtml + '</div>';
+    html += '</div>';
+    html += '<button class=&quot;row-action&quot; style=&quot;flex-shrink:0;margin-left:.75rem;border:1px solid var(--color-border);padding:4px 10px;border-radius:var(--radius-md);font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted)&quot; onclick=&quot;openPreview(' + i + ')&quot; data-idx=&quot;' + i + '&quot;>Preview</button>';
+    html += '</div>';
+  }
+  container.innerHTML = html;
+  var countEl = document.getElementById('log-count');
+  if (countEl) countEl.textContent = data.length + ' events';
+  window._currentLog = data;
+}
+
+function confirmSend() {
+  var modal = document.getElementById('send-modal');
+  if (modal) modal.classList.remove('open');
+
+  var pending = (window._currentLog || logData).filter(function(e){ return e.tags.indexOf('pending') !== -1; });
+  var newEntries = pending.map(function(e){
+    return {
+      initials: e.initials,
+      name: e.name,
+      email: e.email,
+      missing: e.missing,
+      time: 'Just now',
+      desc: 'Reminder sent via Make.com — ' + (e.missing ? e.missing.join(' &amp; ') : 'documents') + ' still missing.',
+      tags: ['sms','email','success']
+    };
+  });
+  var current = window._currentLog || logData;
+  var updated = newEntries.concat(current);
+  renderLog(updated);
+
+  var ts = document.getElementById('total-sent');
+  var ss = document.getElementById('sms-sent');
+  var es = document.getElementById('email-sent');
+  if (ts) { ts.style.opacity='0'; setTimeout(function(){ ts.textContent = parseInt(ts.textContent)+2; ts.style.opacity='1'; }, 200); }
+  if (ss) { ss.style.opacity='0'; setTimeout(function(){ ss.textContent = parseInt(ss.textContent)+1; ss.style.opacity='1'; }, 200); }
+  if (es) { es.style.opacity='0'; setTimeout(function(){ es.textContent = parseInt(es.textContent)+1; es.style.opacity='1'; }, 200); }
+
+  showToast('Make.com triggered: SMS + Email sent to Raj Patel &amp; David Kim');
+
+}
+
+function openPreview(idx) {
+  var data = window._currentLog || [];
+  var item = data[idx];
+  if (!item) return;
+
+  document.getElementById('preview-modal-title').textContent = item.name + ' — Message Preview';
+  document.getElementById('preview-email-to').textContent = item.email || (item.name.toLowerCase().replace(' ','.') + '@email.com');
+  document.getElementById('preview-sms-meta').textContent = 'Delivered via Make.com · ' + item.time;
+
+  var firstName = item.name.split(' ')[0];
+  var missing = item.missing || ['T4 Slip', 'NOA 2024'];
+  var missingStr = missing.join(' &amp; ');
+  var slug = firstName.toLowerCase();
+
+  document.getElementById('preview-sms-text').innerHTML =
+    'Hi <strong>' + firstName + '</strong>, your accountant <strong>Jaura CPA</strong> needs your <strong>' + missingStr + '</strong> to file your taxes. Upload here: <strong>jaura.tax/upload/' + slug + '</strong> \uD83D\uDD12';
+
+  document.getElementById('preview-email-subject').textContent = 'Action Required: Documents needed for your 2025 tax return';
+  document.getElementById('preview-email-body').innerHTML =
+    'Hi <strong>' + firstName + '</strong>,<br><br>' +
+    'Your accountant <strong>Jaura CPA</strong> at <strong>Jaura Automation</strong> still needs the following documents:<br><br>' +
+    missing.map(function(d){ return '· ' + d; }).join('<br>') +
+    '<br><br>Please upload them securely — it only takes 2 minutes.';
+
+  document.getElementById('preview-modal').classList.add('open');
+}
+
+function showToast(msg) {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; style=&quot;width:16px;height:16px;flex-shrink:0&quot;><polyline points=&quot;20 6 9 17 4 12&quot;/></svg><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),200);},3500);
+}
+
+function comingSoon(name) {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.style.background = 'var(--color-surface)';
+  t.style.color = 'var(--color-text)';
+  t.style.border = '1px solid var(--color-border)';
+  t.innerHTML = `<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; style=&quot;width:15px;height:15px;flex-shrink:0;color:var(--color-primary)&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/><path d=&quot;M12 6v6l4 2&quot;/></svg><span><strong>${name}</strong> — Coming in next release</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),200);},2500);
+}
+
+(function(){
+  const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  const moon='<svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><path d=&quot;M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z&quot;/></svg>';
+  const sun='<svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;5&quot;/><path d=&quot;M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42&quot;/></svg>';
+  t.innerHTML=d==='dark'?sun:moon;
+  t.addEventListener('click',()=>{d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);t.innerHTML=d==='dark'?sun:moon;});
+})();
+
+renderLog(logData);
+</script>
+</body>
+</html>" frameborder="0" class="demo-iframe" id="iframe-reminders"></iframe>
+    </div>
+
+    <div class="screen-panel" id="screen-clients">
+      <iframe srcdoc="<!DOCTYPE html>
+
+<html data-theme=&quot;dark&quot; lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;utf-8&quot;/>
+<meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/>
+<title>JauraTax Clients</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/>
+<style>
+:root {
+  --bg:#f7f6f2; --surf:#f9f8f5; --surf2:#f3f0ec; --surf3:#e6e4df;
+  --bdr:#d4d1ca; --div:#dcd9d5;
+  --txt:#28251d; --muted:#7a7974; --faint:#bab9b4;
+  --pri:#01696f; --prih:#0c4e54; --prihl:#cedcd8;
+  --ok:#437a22; --okhl:#d4dfcc;
+  --err:#a12c7b; --errhl:#e0ced7;
+  --wrn:#964219; --wrnhl:#ddcfc6;
+  --blu:#0f6ac7; --bluhl:#d1e4f7;
+  --shsm:0 1px 3px rgba(0,0,0,.07); --shmd:0 4px 16px rgba(0,0,0,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:&quot;Inter&quot;,sans-serif;font-size:14px;color:var(--txt);background:var(--bg);-webkit-font-smoothing:antialiased}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input,select{font:inherit}
+table{border-collapse:collapse;width:100%}
+
+.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100vh}
+
+/* sidebar */
+.sb{grid-row:1/-1;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;padding:1.5rem 1rem;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:8px;margin-bottom:1.75rem;font-size:15px;font-weight:700;letter-spacing:-.02em}
+.nl{font-size:11px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;padding:0 10px;margin:12px 0 4px}
+.ni{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;font-size:13px;color:var(--muted);cursor:pointer;text-decoration:none;transition:background .12s}
+.ni:hover{background:var(--surf2);color:var(--txt)}
+.ni.on{background:var(--prihl);color:var(--pri);font-weight:600}
+.ni svg{width:15px;height:15px;flex-shrink:0}
+.sbfoot{margin-top:auto;padding-top:1rem;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.uav{width:32px;height:32px;border-radius:50%;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+
+/* header */
+.hdr{grid-column:2;background:var(--surf);border-bottom:1px solid var(--bdr);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.bc{font-size:13px;color:var(--muted)}
+.bc b{color:var(--txt);font-weight:600}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:background .12s}
+.bp{background:var(--pri);color:#fff}.bp:hover{background:var(--prih)}
+.bg{background:transparent;border:1px solid var(--bdr);color:var(--muted)}.bg:hover{background:var(--surf2);color:var(--txt)}
+.bsm{padding:5px 10px;font-size:12px}
+.btn svg{width:13px;height:13px}
+.ib{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--muted)}.ib:hover{background:var(--surf2)}
+
+/* main */
+.main{grid-column:2;overflow-y:auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:1.5rem}
+
+/* kpi */
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem}
+.kc{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:1rem 1.25rem;box-shadow:var(--shsm)}
+.kl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.kv{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:6px}
+.chip{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
+.cg{background:var(--okhl);color:var(--ok)}.cr{background:var(--errhl);color:var(--err)}
+.cw{background:var(--wrnhl);color:var(--wrn)}.cn{background:var(--surf3);color:var(--muted)}
+
+/* tabs */
+.tabs{display:flex;gap:2px;background:var(--surf2);border-radius:12px;padding:3px;width:fit-content;margin-bottom:1.25rem}
+.tab{padding:6px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);user-select:none;transition:background .12s}
+.tab.on{background:var(--surf);color:var(--txt);box-shadow:var(--shsm)}
+.tct{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:99px;font-size:10px;font-weight:700;margin-left:5px;padding:0 4px}
+
+/* legend */
+.leg{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 14px;background:var(--surf);border:1px solid var(--bdr);border-radius:8px;font-size:12px;color:var(--muted);margin-bottom:1rem}
+
+/* table */
+.tw{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;box-shadow:var(--shsm)}
+.tbar{padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:var(--surf2);gap:12px;flex-wrap:wrap}
+.ttl{font-size:13px;font-weight:700}
+.srch{padding:6px 10px;border:1px solid var(--bdr);border-radius:6px;font-size:13px;background:var(--surf);color:var(--txt);width:180px;outline:none}
+.srch:focus{border-color:var(--pri)}
+thead th{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:10px 14px;text-align:left;background:var(--surf2);border-bottom:1px solid var(--bdr);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--div);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--surf2)}
+tbody td{padding:11px 14px;vertical-align:middle}
+.cn2{font-weight:600;font-size:13px}
+.ce{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* badges */
+.bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap}
+.bdg::before{content:&quot;&quot;;width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.bfiled{background:var(--okhl);color:var(--ok)}.bfiled::before{background:var(--ok)}
+.bmc{background:var(--errhl);color:var(--err)}.bmc::before{background:var(--err)}
+.bmp{background:var(--wrnhl);color:var(--wrn)}.bmp::before{background:var(--wrn)}
+.bblu{background:var(--bluhl);color:var(--blu)}.bblu::before{background:var(--blu)}
+.boff{background:var(--surf3);color:var(--muted)}.boff::before{background:var(--faint)}
+
+/* row buttons */
+.rb{padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:transparent;color:var(--muted);transition:background .1s}
+.rb:hover{background:var(--surf3);color:var(--txt)}
+.rbp{border-color:var(--pri);color:var(--pri)}.rbp:hover{background:var(--prihl)}
+.rbg{border-color:var(--ok);color:var(--ok)}.rbg:hover{background:var(--okhl)}
+.urgent{color:var(--err);font-weight:600;font-size:11px}
+
+/* avatar */
+.av{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(20,18,14,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.ov.open{display:flex}
+.modal{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.75rem;width:100%;max-width:520px;box-shadow:var(--shmd);max-height:90vh;overflow-y:auto}
+.mh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.mt{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.ms{font-size:13px;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.mf{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--div)}
+
+/* email preview */
+.ep{background:var(--surf2);border:1px solid var(--bdr);border-radius:8px;padding:1rem;font-size:12px;line-height:1.8;color:var(--muted)}
+.ep b{color:var(--txt)}
+
+/* form */
+.fr{margin-bottom:14px}
+.fr label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.fr input,.fr select{width:100%;padding:7px 10px;border:1px solid var(--bdr);border-radius:6px;background:var(--surf2);color:var(--txt);font-size:13px;outline:none;transition:border-color .12s}
+.fr input:focus,.fr select:focus{border-color:var(--pri);background:var(--surf)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cls{margin-bottom:1.25rem}
+.clst{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--div)}
+.clg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.cli{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:5px;cursor:pointer;font-size:12px;transition:background .1s}
+.cli:hover{background:var(--surf2)}
+.cli input{width:13px;height:13px;accent-color:var(--pri);cursor:pointer;flex-shrink:0}
+.cust-item{display:flex;align-items:center;gap:8px;background:var(--prihl);border:1px solid var(--pri);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--pri);font-weight:600;margin-bottom:4px}
+.cust-item button{margin-left:auto;opacity:.6;font-size:13px;line-height:1}.cust-item button:hover{opacity:1}
+.carow{display:flex;gap:6px;margin-top:4px}
+.cai{flex:1;padding:5px 8px;border:1px solid var(--bdr);border-radius:6px;font-size:12px;background:var(--surf);color:var(--txt);outline:none}
+.cai:focus{border-color:var(--pri)}
+
+/* toast */
+.tc{position:fixed;bottom:1.5rem;right:1.5rem;z-index:500;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:var(--txt);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:var(--shmd);display:flex;align-items:center;gap:8px;pointer-events:all;animation:sin .2s forwards;max-width:360px}
+.toast.rm{animation:sout .2s forwards}
+@keyframes sin{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes sout{from{opacity:1}to{opacity:0;transform:translateX(110%)}}
+</style><style>
+/* Light theme */
+[data-theme=&quot;light&quot;] {
+  --bg:#f7f6f2; --surf:#f9f8f5; --surf2:#f3f0ec; --surf3:#e6e4df;
+  --bdr:#d4d1ca; --div:#dcd9d5;
+  --txt:#28251d; --muted:#7a7974; --faint:#bab9b4;
+  --pri:#01696f; --prih:#0c4e54; --prihl:#cedcd8;
+  --ok:#437a22; --okhl:#d4dfcc;
+  --err:#a12c7b; --errhl:#e0ced7;
+  --wrn:#964219; --wrnhl:#ddcfc6;
+  --blu:#0f6ac7; --bluhl:#d1e4f7;
+  --shsm:0 1px 3px rgba(0,0,0,.07); --shmd:0 4px 16px rgba(0,0,0,.10);
+}
+/* Dark theme */
+[data-theme=&quot;dark&quot;] {
+  --bg:#171614; --surf:#1c1b19; --surf2:#232220; --surf3:#2a2825;
+  --bdr:#3a3830; --div:#302e2a;
+  --txt:#e8e5de; --muted:#9a9690; --faint:#4a4844;
+  --pri:#2ab3ba; --prih:#1e9099; --prihl:#0d3538;
+  --ok:#6aad3a; --okhl:#1e2e14;
+  --err:#e066b5; --errhl:#2e1428;
+  --wrn:#e07840; --wrnhl:#2e1c0e;
+  --blu:#4a9de8; --bluhl:#0d2340;
+  --shsm:0 1px 3px rgba(0,0,0,.3); --shmd:0 4px 16px rgba(0,0,0,.4);
+}
+/* Base */
+body { background: var(--bg) !important; color: var(--txt) !important; }
+.icon-btn-theme {
+  background: transparent;
+  border: 1px solid var(--bdr);
+  border-radius: 6px;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.icon-btn-theme:hover { background: var(--surf2); color: var(--txt); }
+</style>
+</head>
+<body>
+<div class=&quot;app&quot;>
+<aside class=&quot;sb&quot;>
+<div class=&quot;logo&quot;>
+<svg height=&quot;26&quot; viewbox=&quot;0 0 32 32&quot; width=&quot;26&quot;><rect fill=&quot;var(--pri)&quot; height=&quot;32&quot; rx=&quot;8&quot; width=&quot;32&quot;></rect><path d=&quot;M8 10h16&quot; stroke=&quot;#fff&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path><path d=&quot;M12 10v10&quot; stroke=&quot;#fff&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path><circle cx=&quot;21&quot; cy=&quot;21&quot; r=&quot;4&quot; stroke=&quot;#fff&quot; stroke-width=&quot;1.5&quot;></circle><path d=&quot;M19.5 21l1 1 2-2&quot; stroke=&quot;#fff&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;1.5&quot;></path></svg>
+    JauraTax
+  </div>
+<span class=&quot;nl&quot;>Main</span>
+<a class=&quot;ni&quot; href=&quot;#&quot; onclick=&quot;cs('Dashboard');return false;&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;3&quot; y=&quot;3&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;14&quot; y=&quot;3&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;3&quot; y=&quot;14&quot;></rect><rect height=&quot;7&quot; rx=&quot;1&quot; width=&quot;7&quot; x=&quot;14&quot; y=&quot;14&quot;></rect></svg>Dashboard</a>
+<a class=&quot;ni on&quot; href=&quot;#&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2&quot;></path><circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;4&quot;></circle><path d=&quot;M23 21v-2a4 4 0 0 0-3-3.87&quot;></path><path d=&quot;M16 3.13a4 4 0 0 1 0 7.75&quot;></path></svg>Clients</a>
+<a class=&quot;ni&quot; href=&quot;#&quot; onclick=&quot;cs('Documents');return false;&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z&quot;></path><polyline points=&quot;14 2 14 8 20 8&quot;></polyline></svg>Documents</a>
+<a class=&quot;ni&quot; href=&quot;#&quot; onclick=&quot;cs('Reminders');return false;&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9&quot;></path><path d=&quot;M13.73 21a2 2 0 0 1-3.46 0&quot;></path></svg>Reminders</a>
+<span class=&quot;nl&quot;>Reports</span>
+<a class=&quot;ni&quot; href=&quot;#&quot; onclick=&quot;cs('Analytics');return false;&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><line x1=&quot;18&quot; x2=&quot;18&quot; y1=&quot;20&quot; y2=&quot;10&quot;></line><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;20&quot; y2=&quot;4&quot;></line><line x1=&quot;6&quot; x2=&quot;6&quot; y1=&quot;20&quot; y2=&quot;14&quot;></line></svg>Analytics</a>
+<div class=&quot;sbfoot&quot;>
+<div class=&quot;uav&quot;>JA</div>
+<div><div style=&quot;font-size:13px;font-weight:600&quot;>Jaura CPA</div><div style=&quot;font-size:11px;color:var(--muted)&quot;>Admin</div></div>
+<button aria-label=&quot;Toggle theme&quot; class=&quot;icon-btn-theme&quot; data-theme-toggle=&quot;&quot;></button></div>
+</aside>
+<header class=&quot;hdr&quot;>
+<div class=&quot;bc&quot;>JauraTax / <b>Clients</b></div>
+<div style=&quot;display:flex;align-items:center;gap:8px&quot;>
+<button class=&quot;ib&quot;><svg fill=&quot;none&quot; height=&quot;18&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;18&quot;><path d=&quot;M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9&quot;></path><path d=&quot;M13.73 21a2 2 0 0 1-3.46 0&quot;></path></svg></button>
+<button class=&quot;btn bp&quot; id=&quot;btn-addclient&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;5&quot; y2=&quot;19&quot;></line><line x1=&quot;5&quot; x2=&quot;19&quot; y1=&quot;12&quot; y2=&quot;12&quot;></line></svg>
+      Add Client
+    </button>
+</div>
+</header>
+<main class=&quot;main&quot;>
+<h1>Clients</h1>
+<p class=&quot;sub&quot;>Track filing status, send review requests, and re-engage past clients</p>
+<div class=&quot;krow&quot;>
+<div class=&quot;kc&quot;><div class=&quot;kl&quot;>Total Active</div><div class=&quot;kv&quot; id=&quot;k-active&quot; style=&quot;color:var(--pri)&quot;>12</div><span class=&quot;chip cg&quot;>Tax Season 2026</span></div>
+<div class=&quot;kc&quot;><div class=&quot;kl&quot;>Tax Filed</div><div class=&quot;kv&quot; id=&quot;k-filed&quot; style=&quot;color:var(--ok)&quot;>5</div><span class=&quot;chip cg&quot;>✓ Complete</span></div>
+<div class=&quot;kc&quot;><div class=&quot;kl&quot;>Missing (Client)</div><div class=&quot;kv&quot; id=&quot;k-mc&quot; style=&quot;color:var(--err)&quot;>4</div><span class=&quot;chip cr&quot;>Needs docs</span></div>
+<div class=&quot;kc&quot;><div class=&quot;kl&quot;>Missing (CPA)</div><div class=&quot;kv&quot; id=&quot;k-mp&quot; style=&quot;color:var(--wrn)&quot;>3</div><span class=&quot;chip cw&quot;>In progress</span></div>
+<div class=&quot;kc&quot;><div class=&quot;kl&quot;>Inactive</div><div class=&quot;kv&quot; id=&quot;k-inactive&quot; style=&quot;color:var(--muted)&quot;>8</div><span class=&quot;chip cn&quot;>Win-back ready</span></div>
+</div>
+<div class=&quot;tabs&quot;>
+<div class=&quot;tab on&quot; id=&quot;tab-a&quot; onclick=&quot;switchTab('a')&quot;>Active Clients<span class=&quot;tct&quot; id=&quot;tct-a&quot; style=&quot;background:var(--prihl);color:var(--pri)&quot;>12</span></div>
+<div class=&quot;tab&quot; id=&quot;tab-i&quot; onclick=&quot;switchTab('i')&quot;>Inactive Clients<span class=&quot;tct&quot; id=&quot;tct-i&quot; style=&quot;background:var(--surf3);color:var(--muted)&quot;>8</span></div>
+</div>
+<div id=&quot;panel-a&quot;>
+<div class=&quot;leg&quot;>
+<b>Status:</b>
+<span><span class=&quot;bdg bfiled&quot;>Tax Filed</span> — Google review auto-sent 7 days post-filing</span>
+<span><span class=&quot;bdg bmc&quot;>Missing (Client)</span> — waiting on client docs</span>
+<span><span class=&quot;bdg bmp&quot;>Missing (CPA)</span> — CPA work in progress</span>
+</div>
+<div class=&quot;tw&quot;>
+<div class=&quot;tbar&quot;>
+<span class=&quot;ttl&quot;>Active Clients — Tax Season 2026</span>
+<div style=&quot;display:flex;gap:8px;align-items:center&quot;>
+<input class=&quot;srch&quot; oninput=&quot;searchA(this.value)&quot; placeholder=&quot;Search clients...&quot; type=&quot;search&quot;/>
+<button class=&quot;btn bg bsm&quot;>Export CSV</button>
+</div>
+</div>
+<table>
+<thead><tr><th>Client</th><th>Filing Status</th><th>Missing Docs</th><th>Google Review</th><th>Last Action</th><th></th></tr></thead>
+<tbody id=&quot;tb-a&quot;></tbody>
+</table>
+</div>
+</div>
+<div id=&quot;panel-i&quot; style=&quot;display:none&quot;>
+<div class=&quot;tw&quot;>
+<div class=&quot;tbar&quot;>
+<span class=&quot;ttl&quot;>Inactive Clients — Win-Back Campaign</span>
+<div style=&quot;display:flex;gap:8px;align-items:center&quot;>
+<input class=&quot;srch&quot; oninput=&quot;searchI(this.value)&quot; placeholder=&quot;Search...&quot; type=&quot;search&quot;/>
+<button class=&quot;btn bp bsm&quot; id=&quot;btn-allwb&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;22 2 15 22 11 13 2 9 22 2&quot;></polyline></svg>
+            Send All Win-Back Emails
+          </button>
+</div>
+</div>
+<table>
+<thead><tr><th>Client</th><th>Last Active</th><th>Last Service</th><th>Win-Back Status</th><th></th></tr></thead>
+<tbody id=&quot;tb-i&quot;></tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+<!-- WIN-BACK MODAL -->
+<div class=&quot;ov&quot; id=&quot;m-wb&quot;>
+<div class=&quot;modal&quot;>
+<div class=&quot;mh&quot;><div><div class=&quot;mt&quot; id=&quot;wb-t&quot;>Win-Back Email</div><div style=&quot;font-size:11px;color:var(--muted);margin-top:3px&quot;>Sent via Make.com</div></div><button class=&quot;ib&quot; onclick=&quot;cm('m-wb')&quot;><svg fill=&quot;none&quot; height=&quot;15&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;15&quot;><line x1=&quot;18&quot; x2=&quot;6&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line><line x1=&quot;6&quot; x2=&quot;18&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line></svg></button></div>
+<div class=&quot;ms&quot;>Review the personalized email below. Make.com will deliver it and track opens.</div>
+<div class=&quot;ep&quot; id=&quot;wb-body&quot;></div>
+<div class=&quot;mf&quot;>
+<button class=&quot;btn bg&quot; onclick=&quot;cm('m-wb')&quot;>Cancel</button>
+<button class=&quot;btn bp&quot; id=&quot;wb-ok&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;22 2 15 22 11 13 2 9 22 2&quot;></polyline></svg>Confirm &amp;amp; Send via Make.com</button>
+</div>
+</div>
+</div>
+<!-- REVIEW MODAL -->
+<div class=&quot;ov&quot; id=&quot;m-rv&quot;>
+<div class=&quot;modal&quot;>
+<div class=&quot;mh&quot;><div><div class=&quot;mt&quot; id=&quot;rv-t&quot;>Send Google Review Request</div><div style=&quot;font-size:11px;color:var(--muted);margin-top:3px&quot;>Auto follow-up in 5 days if no response</div></div><button class=&quot;ib&quot; onclick=&quot;cm('m-rv')&quot;><svg fill=&quot;none&quot; height=&quot;15&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;15&quot;><line x1=&quot;18&quot; x2=&quot;6&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line><line x1=&quot;6&quot; x2=&quot;18&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line></svg></button></div>
+<div class=&quot;ms&quot;>This email goes out today. If the client does not click the review link within 5 days, Make.com automatically sends one follow-up.</div>
+<div class=&quot;ep&quot; id=&quot;rv-body&quot;></div>
+<div class=&quot;mf&quot;>
+<button class=&quot;btn bg&quot; onclick=&quot;cm('m-rv')&quot;>Cancel</button>
+<button class=&quot;btn bp&quot; id=&quot;rv-ok&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;22 2 15 22 11 13 2 9 22 2&quot;></polyline></svg>Send Review Request</button>
+</div>
+</div>
+</div>
+<!-- ADD CLIENT MODAL -->
+<div class=&quot;ov&quot; id=&quot;m-add&quot;>
+<div class=&quot;modal&quot; style=&quot;max-width:560px&quot;>
+<div class=&quot;mh&quot;><div><div class=&quot;mt&quot;>Add New Client</div><div style=&quot;font-size:11px;color:var(--muted);margin-top:3px&quot;>Fill details and select required documents</div></div><button class=&quot;ib&quot; onclick=&quot;cm('m-add')&quot;><svg fill=&quot;none&quot; height=&quot;15&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot; width=&quot;15&quot;><line x1=&quot;18&quot; x2=&quot;6&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line><line x1=&quot;6&quot; x2=&quot;18&quot; y1=&quot;6&quot; y2=&quot;18&quot;></line></svg></button></div>
+<div class=&quot;f2&quot;>
+<div class=&quot;fr&quot;><label>First Name</label><input id=&quot;f-fn&quot; placeholder=&quot;Raj&quot; type=&quot;text&quot;/></div>
+<div class=&quot;fr&quot;><label>Last Name</label><input id=&quot;f-ln&quot; placeholder=&quot;Patel&quot; type=&quot;text&quot;/></div>
+</div>
+<div class=&quot;f2&quot;>
+<div class=&quot;fr&quot;><label>Email</label><input id=&quot;f-em&quot; placeholder=&quot;raj@gmail.com&quot; type=&quot;email&quot;/></div>
+<div class=&quot;fr&quot;><label>Phone</label><input id=&quot;f-ph&quot; placeholder=&quot;+1 416 555 0123&quot; type=&quot;tel&quot;/></div>
+</div>
+<div class=&quot;f2&quot;>
+<div class=&quot;fr&quot;><label>Tax Year</label><select id=&quot;f-yr&quot;><option>2025</option><option>2024</option><option>2023</option></select></div>
+<div class=&quot;fr&quot;><label>Client Type</label><select id=&quot;f-ty&quot;><option>Personal Tax Return</option><option>Corporate Tax Return</option><option>Bookkeeping</option><option>HST/GST Filing</option></select></div>
+</div>
+<div class=&quot;cls&quot;>
+<div class=&quot;clst&quot;>Pre-Defined Document Checklist</div>
+<div style=&quot;font-size:11px;color:var(--muted);margin-bottom:8px&quot;>Select documents required from this client</div>
+<div class=&quot;clg&quot; id=&quot;cl-grid&quot;></div>
+</div>
+<div class=&quot;cls&quot;>
+<div class=&quot;clst&quot;>Custom Documents</div>
+<div style=&quot;font-size:11px;color:var(--muted);margin-bottom:8px&quot;>Add client-specific docs not in the list above</div>
+<div id=&quot;cust-list&quot;></div>
+<div class=&quot;carow&quot;>
+<input class=&quot;cai&quot; id=&quot;cai&quot; placeholder=&quot;e.g. Rental Income Statement 2025&quot; type=&quot;text&quot;/>
+<button class=&quot;btn bg bsm&quot; id=&quot;btn-addcust&quot;>+ Add</button>
+</div>
+</div>
+<div class=&quot;mf&quot;>
+<button class=&quot;btn bg&quot; onclick=&quot;cm('m-add')&quot;>Cancel</button>
+<button class=&quot;btn bp&quot; id=&quot;btn-saveclient&quot;><svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;20 6 9 17 4 12&quot;></polyline></svg>Save Client &amp;amp; Send Portal Link</button>
+</div>
+</div>
+</div>
+<div class=&quot;tc&quot; id=&quot;tc&quot;></div>
+<script>
+var AC = [
+  {id:1,  name:&quot;Priya Sharma&quot;,   email:&quot;priya.sharma@gmail.com&quot;,  st:&quot;filed&quot;, miss:null,               rv:&quot;sent&quot;,    rvd:null, last:&quot;Apr 18&quot;},
+  {id:2,  name:&quot;Michael Chen&quot;,   email:&quot;m.chen@outlook.com&quot;,      st:&quot;filed&quot;, miss:null,               rv:&quot;sent&quot;,    rvd:null, last:&quot;Apr 15&quot;},
+  {id:3,  name:&quot;Sarah Thompson&quot;, email:&quot;s.thompson@rogers.com&quot;,   st:&quot;filed&quot;, miss:null,               rv:&quot;pending&quot;, rvd:2,   last:&quot;Apr 22&quot;},
+  {id:4,  name:&quot;Anita Desai&quot;,    email:&quot;anita.desai@gmail.com&quot;,   st:&quot;filed&quot;, miss:null,               rv:&quot;pending&quot;, rvd:5,   last:&quot;Apr 24&quot;},
+  {id:5,  name:&quot;Robert Nguyen&quot;,  email:&quot;r.nguyen@gmail.com&quot;,      st:&quot;filed&quot;, miss:null,               rv:&quot;none&quot;,    rvd:7,   last:&quot;Apr 26&quot;},
+  {id:6,  name:&quot;Raj Patel&quot;,      email:&quot;raj.patel@hotmail.com&quot;,   st:&quot;mc&quot;,    miss:&quot;T4 Slip, NOA 2024&quot;,rv:&quot;none&quot;,    rvd:null,last:&quot;Apr 14&quot;},
+  {id:7,  name:&quot;David Kim&quot;,      email:&quot;david.kim@gmail.com&quot;,     st:&quot;mc&quot;,    miss:&quot;T4 Slip&quot;,          rv:&quot;none&quot;,    rvd:null,last:&quot;Apr 14&quot;},
+  {id:8,  name:&quot;Amir Nasser&quot;,    email:&quot;amir.n@outlook.com&quot;,      st:&quot;mc&quot;,    miss:&quot;T4A Slip&quot;,         rv:&quot;none&quot;,    rvd:null,last:&quot;Apr 16&quot;},
+  {id:9,  name:&quot;Lisa Bouchard&quot;,  email:&quot;lisa.b@gmail.com&quot;,        st:&quot;mc&quot;,    miss:&quot;RRSP Receipt&quot;,     rv:&quot;none&quot;,    rvd:null,last:&quot;Apr 17&quot;},
+  {id:10, name:&quot;Tyler Singh&quot;,    email:&quot;tyler.s@bell.ca&quot;,         st:&quot;mp&quot;,    miss:null,               rv:&quot;none&quot;,    rvd:null,last:&quot;Apr 20&quot;},
+  {id:11, name:&quot;Maria Novak&quot;,    email:&quot;m.novak@rogers.com&quot;,      st:&quot;mp&quot;,    miss:null,               rv:&quot;none&quot;,    rvd:null,last:&quot;Apr 19&quot;},
+  {id:12, name:&quot;James Okafor&quot;,   email:&quot;j.okafor@yahoo.ca&quot;,       st:&quot;mp&quot;,    miss:null,               rv:&quot;none&quot;,    rvd:null,last:&quot;Apr 18&quot;}
+];
+
+var IC = [
+  {id:101,name:&quot;Karen Mills&quot;,     email:&quot;karen.m@gmail.com&quot;,     yr:&quot;2024&quot;,svc:&quot;Personal Tax Return&quot;,  wb:&quot;none&quot;},
+  {id:102,name:&quot;George Petrov&quot;,   email:&quot;g.petrov@hotmail.com&quot;,  yr:&quot;2023&quot;,svc:&quot;Corporate Tax Return&quot;, wb:&quot;none&quot;},
+  {id:103,name:&quot;Nadia Okonkwo&quot;,   email:&quot;nadia.o@gmail.com&quot;,     yr:&quot;2024&quot;,svc:&quot;Personal Tax Return&quot;,  wb:&quot;sent&quot;},
+  {id:104,name:&quot;Brian Tran&quot;,      email:&quot;b.tran@bell.ca&quot;,        yr:&quot;2023&quot;,svc:&quot;Bookkeeping&quot;,          wb:&quot;none&quot;},
+  {id:105,name:&quot;Sandra Kowalski&quot;, email:&quot;s.kowal@rogers.com&quot;,    yr:&quot;2024&quot;,svc:&quot;Personal Tax Return&quot;,  wb:&quot;none&quot;},
+  {id:106,name:&quot;Frank Lombardi&quot;,  email:&quot;f.lomb@gmail.com&quot;,      yr:&quot;2022&quot;,svc:&quot;Corporate Tax Return&quot;, wb:&quot;none&quot;},
+  {id:107,name:&quot;Yuki Tanaka&quot;,     email:&quot;yuki.t@outlook.com&quot;,    yr:&quot;2024&quot;,svc:&quot;Personal Tax Return&quot;,  wb:&quot;sent&quot;},
+  {id:108,name:&quot;Omar Hussain&quot;,    email:&quot;omar.h@gmail.com&quot;,      yr:&quot;2023&quot;,svc:&quot;Bookkeeping&quot;,          wb:&quot;none&quot;}
+];
+
+var DOCS = [
+  &quot;T4 Slip - Employment Income&quot;,&quot;T4A - Pension / Other Income&quot;,&quot;T5 - Investment Income&quot;,
+  &quot;RRSP Contribution Receipt&quot;,&quot;Notice of Assessment (NOA) 2024&quot;,&quot;T2202 - Tuition Certificate&quot;,
+  &quot;Charitable Donation Receipts&quot;,&quot;Medical Expense Receipts&quot;,&quot;Home Office Expenses&quot;,
+  &quot;Business Income / Expenses&quot;,&quot;Rental Income Statement&quot;,&quot;T4E - Employment Insurance&quot;
+];
+
+var COLORS = [&quot;#01696f&quot;,&quot;#437a22&quot;,&quot;#006494&quot;,&quot;#7a39bb&quot;,&quot;#964219&quot;,&quot;#a12c7b&quot;,&quot;#0f6ac7&quot;,&quot;#5b4bb5&quot;];
+var customDocs = [];
+var srchA = &quot;&quot;;
+var srchI = &quot;&quot;;
+
+function ini(n) { return n.split(&quot; &quot;).map(function(x){return x[0];}).join(&quot;&quot;).toUpperCase().slice(0,2); }
+function col(id) { return COLORS[id % COLORS.length]; }
+function avEl(id, name) {
+  return &quot;<div class='av' style='background:&quot; + col(id) + &quot;'>&quot; + ini(name) + &quot;</div>&quot;;
+}
+
+function renderA() {
+  var tb = document.getElementById(&quot;tb-a&quot;);
+  var rows = &quot;&quot;;
+  var s = srchA.toLowerCase();
+  for (var i = 0; i < AC.length; i++) {
+    var c = AC[i];
+    if (s &amp;&amp; c.name.toLowerCase().indexOf(s) === -1 &amp;&amp; c.email.toLowerCase().indexOf(s) === -1) continue;
+    var sb = c.st === &quot;filed&quot; ? &quot;<span class='bdg bfiled'>Tax Filed</span>&quot;
+           : c.st === &quot;mc&quot;   ? &quot;<span class='bdg bmc'>Missing (Client)</span>&quot;
+                              : &quot;<span class='bdg bmp'>Missing (CPA)</span>&quot;;
+    var md = c.miss ? &quot;<span style='font-size:11px;color:var(--err);font-weight:500'>&quot; + c.miss + &quot;</span>&quot;
+           : c.st === &quot;mp&quot; ? &quot;<span style='font-size:11px;color:var(--wrn)'>Awaiting CPA review</span>&quot;
+           : &quot;<span style='color:var(--faint);font-size:11px'>-</span>&quot;;
+    var rv = &quot;&quot;;
+    if (c.st !== &quot;filed&quot;) {
+      rv = &quot;<span style='color:var(--faint);font-size:11px'>-</span>&quot;;
+    } else if (c.rv === &quot;sent&quot;) {
+      rv = &quot;<span class='bdg bblu'>✓ Request Sent</span>&quot;;
+    } else if (c.rv === &quot;pending&quot;) {
+      var cls = c.rvd <= 2 ? &quot;urgent&quot; : &quot;&quot;;
+      rv = &quot;<span class='&quot; + cls + &quot;'>Sends in &quot; + c.rvd + &quot; day&quot; + (c.rvd !== 1 ? &quot;s&quot; : &quot;&quot;) + &quot;</span>&quot;;
+    } else {
+      rv = &quot;<button class='rb rbg' onclick='openRV(&quot; + c.id + &quot;)'>Send Review Request</button>&quot;;
+    }
+    rows += &quot;<tr>&quot;;
+    rows += &quot;<td><div style='display:flex;align-items:center;gap:10px'>&quot; + avEl(c.id, c.name) + &quot;<div><div class='cn2'>&quot; + c.name + &quot;</div><div class='ce'>&quot; + c.email + &quot;</div></div></div></td>&quot;;
+    rows += &quot;<td>&quot; + sb + &quot;</td>&quot;;
+    rows += &quot;<td>&quot; + md + &quot;</td>&quot;;
+    rows += &quot;<td>&quot; + rv + &quot;</td>&quot;;
+    rows += &quot;<td style='font-size:11px;color:var(--muted)'>&quot; + c.last + &quot;</td>&quot;;
+    rows += &quot;<td style='text-align:right'><button class='rb'>View</button></td>&quot;;
+    rows += &quot;</tr>&quot;;
+  }
+  tb.innerHTML = rows || &quot;<tr><td colspan='6' style='text-align:center;padding:2rem;color:var(--muted)'>No clients found</td></tr>&quot;;
+}
+
+function renderI() {
+  var tb = document.getElementById(&quot;tb-i&quot;);
+  var rows = &quot;&quot;;
+  var s = srchI.toLowerCase();
+  for (var i = 0; i < IC.length; i++) {
+    var c = IC[i];
+    if (s &amp;&amp; c.name.toLowerCase().indexOf(s) === -1 &amp;&amp; c.email.toLowerCase().indexOf(s) === -1) continue;
+    var wb = c.wb === &quot;sent&quot; ? &quot;<span class='bdg bblu'>✓ Email Sent</span>&quot; : &quot;<span class='bdg boff'>Not Contacted</span>&quot;;
+    var act = c.wb === &quot;sent&quot; ? &quot;<span style='font-size:11px;color:var(--faint)'>Awaiting response</span>&quot;
+            : &quot;<button class='rb rbp' onclick='openWB(&quot; + c.id + &quot;)'>Send Win-Back Email</button>&quot;;
+    rows += &quot;<tr>&quot;;
+    rows += &quot;<td><div style='display:flex;align-items:center;gap:10px'>&quot; + avEl(c.id, c.name) + &quot;<div><div class='cn2'>&quot; + c.name + &quot;</div><div class='ce'>&quot; + c.email + &quot;</div></div></div></td>&quot;;
+    rows += &quot;<td style='font-size:11px;color:var(--muted)'>&quot; + c.yr + &quot;</td>&quot;;
+    rows += &quot;<td style='font-size:11px;color:var(--muted)'>&quot; + c.svc + &quot;</td>&quot;;
+    rows += &quot;<td>&quot; + wb + &quot;</td>&quot;;
+    rows += &quot;<td style='text-align:right'>&quot; + act + &quot;</td>&quot;;
+    rows += &quot;</tr>&quot;;
+  }
+  tb.innerHTML = rows || &quot;<tr><td colspan='5' style='text-align:center;padding:2rem;color:var(--muted)'>No clients found</td></tr>&quot;;
+}
+
+function switchTab(t) {
+  document.getElementById(&quot;tab-a&quot;).className = &quot;tab&quot; + (t === &quot;a&quot; ? &quot; on&quot; : &quot;&quot;);
+  document.getElementById(&quot;tab-i&quot;).className = &quot;tab&quot; + (t === &quot;i&quot; ? &quot; on&quot; : &quot;&quot;);
+  document.getElementById(&quot;panel-a&quot;).style.display = t === &quot;a&quot; ? &quot;block&quot; : &quot;none&quot;;
+  document.getElementById(&quot;panel-i&quot;).style.display = t === &quot;i&quot; ? &quot;block&quot; : &quot;none&quot;;
+}
+
+function searchA(v) { srchA = v; renderA(); }
+function searchI(v) { srchI = v; renderI(); }
+
+function openWB(id) {
+  var c = null;
+  for (var i = 0; i < IC.length; i++) { if (IC[i].id === id) { c = IC[i]; break; } }
+  if (!c) return;
+  var fn = c.name.split(&quot; &quot;)[0];
+  document.getElementById(&quot;wb-t&quot;).textContent = &quot;Win-Back Email - &quot; + c.name;
+  document.getElementById(&quot;wb-body&quot;).innerHTML =
+    &quot;<b>To:</b> &quot; + c.email + &quot;<br>&quot; +
+    &quot;<b>Subject:</b> &quot; + fn + &quot;, we would love to help with your 2025 taxes<br><br>&quot; +
+    &quot;Hi <b>&quot; + fn + &quot;</b>,<br><br>&quot; +
+    &quot;It has been a while since we last worked together on your &quot; + c.yr + &quot; &quot; + c.svc.toLowerCase() + &quot;. Tax season is here and the deadline is coming up fast.<br><br>&quot; +
+    &quot;We would love to make it stress-free for you again this year. If you are ready to get started, just reply to this email or click below to book your spot.<br><br>&quot; +
+    &quot;📅 <b>Book a call: jaura.tax/book</b><br><br>&quot; +
+    &quot;Warm regards,<br><b>Jaura CPA - Jaura Automation</b>&quot;;
+  document.getElementById(&quot;wb-ok&quot;).onclick = function() { confirmWB(id); };
+  document.getElementById(&quot;m-wb&quot;).classList.add(&quot;open&quot;);
+}
+
+function confirmWB(id) {
+  for (var i = 0; i < IC.length; i++) { if (IC[i].id === id) { IC[i].wb = &quot;sent&quot;; break; } }
+  cm(&quot;m-wb&quot;);
+  renderI();
+  toast(&quot;Win-back email sent via Make.com&quot;);
+}
+
+function sendAllWB() {
+  var n = 0;
+  for (var i = 0; i < IC.length; i++) { if (IC[i].wb !== &quot;sent&quot;) { IC[i].wb = &quot;sent&quot;; n++; } }
+  if (n === 0) { toast(&quot;All inactive clients already contacted&quot;); return; }
+  renderI();
+  toast(n + &quot; win-back emails queued in Make.com&quot;);
+}
+
+function openRV(id) {
+  var c = null;
+  for (var i = 0; i < AC.length; i++) { if (AC[i].id === id) { c = AC[i]; break; } }
+  if (!c) return;
+  var fn = c.name.split(&quot; &quot;)[0];
+  document.getElementById(&quot;rv-t&quot;).textContent = &quot;Google Review Request - &quot; + c.name;
+  document.getElementById(&quot;rv-body&quot;).innerHTML =
+    &quot;<b>To:</b> &quot; + c.email + &quot;<br>&quot; +
+    &quot;<b>Subject:</b> &quot; + fn + &quot;, could you leave us a quick Google review?<br><br>&quot; +
+    &quot;Hi <b>&quot; + fn + &quot;</b>,<br><br>&quot; +
+    &quot;We are so glad we could take care of your 2025 taxes! If you had a great experience with us, we would really appreciate a quick Google review - it takes about 30 seconds.<br><br>&quot; +
+    &quot;⭐ <b>Leave a review: google.com/review/jauracpa</b><br><br>&quot; +
+    &quot;<em>If you do not respond in 5 days, one gentle follow-up will be sent automatically via Make.com.</em><br><br>&quot; +
+    &quot;Thank you,<br><b>Jaura CPA - Jaura Automation</b>&quot;;
+  document.getElementById(&quot;rv-ok&quot;).onclick = function() { confirmRV(id); };
+  document.getElementById(&quot;m-rv&quot;).classList.add(&quot;open&quot;);
+}
+
+function confirmRV(id) {
+  for (var i = 0; i < AC.length; i++) { if (AC[i].id === id) { AC[i].rv = &quot;sent&quot;; break; } }
+  cm(&quot;m-rv&quot;);
+  renderA();
+  toast(&quot;Review request sent - follow-up scheduled in 5 days via Make.com&quot;);
+}
+
+function openAddClient() {
+  customDocs = [];
+  renderCL();
+  renderCust();
+  document.getElementById(&quot;f-fn&quot;).value = &quot;&quot;;
+  document.getElementById(&quot;f-ln&quot;).value = &quot;&quot;;
+  document.getElementById(&quot;f-em&quot;).value = &quot;&quot;;
+  document.getElementById(&quot;f-ph&quot;).value = &quot;&quot;;
+  document.getElementById(&quot;m-add&quot;).classList.add(&quot;open&quot;);
+}
+
+function renderCL() {
+  var g = document.getElementById(&quot;cl-grid&quot;);
+  var html = &quot;&quot;;
+  for (var i = 0; i < DOCS.length; i++) {
+    html += &quot;<label class='cli'><input type='checkbox'><span>&quot; + DOCS[i] + &quot;</span></label>&quot;;
+  }
+  g.innerHTML = html;
+}
+
+function renderCust() {
+  var el = document.getElementById(&quot;cust-list&quot;);
+  if (!customDocs.length) { el.innerHTML = &quot;&quot;; return; }
+  var html = &quot;&quot;;
+  for (var i = 0; i < customDocs.length; i++) {
+    html += &quot;<div class='cust-item'><span>&quot; + customDocs[i] + &quot;</span><button onclick='rmCust(&quot; + i + &quot;)'>✕</button></div>&quot;;
+  }
+  el.innerHTML = html;
+}
+
+function addCust() {
+  var inp = document.getElementById(&quot;cai&quot;);
+  var v = inp.value.trim();
+  if (!v) return;
+  customDocs.push(v);
+  inp.value = &quot;&quot;;
+  renderCust();
+}
+
+function rmCust(i) { customDocs.splice(i, 1); renderCust(); }
+
+function saveClient() {
+  var fn = document.getElementById(&quot;f-fn&quot;).value.trim();
+  var ln = document.getElementById(&quot;f-ln&quot;).value.trim();
+  var em = document.getElementById(&quot;f-em&quot;).value.trim();
+  if (!fn || !em) { toast(&quot;Please enter at least a first name and email&quot;); return; }
+  var checked = [];
+  var cbs = document.querySelectorAll(&quot;#cl-grid input[type=checkbox]:checked&quot;);
+  for (var i = 0; i < cbs.length; i++) { checked.push(cbs[i].parentNode.querySelector(&quot;span&quot;).textContent); }
+  var allDocs = checked.concat(customDocs);
+  var miss = allDocs.length > 0 ? allDocs.slice(0,3).join(&quot;, &quot;) + (allDocs.length > 3 ? &quot; +&quot; + (allDocs.length-3) + &quot; more&quot; : &quot;&quot;) : null;
+  var nc = { id: Date.now(), name: fn + &quot; &quot; + ln, email: em, st: allDocs.length ? &quot;mc&quot; : &quot;mp&quot;, miss: miss, rv: &quot;none&quot;, rvd: null, last: &quot;Just now&quot; };
+  AC.push(nc);
+  document.getElementById(&quot;k-active&quot;).textContent = AC.length;
+  document.getElementById(&quot;tct-a&quot;).textContent = AC.length;
+  renderA();
+  cm(&quot;m-add&quot;);
+  toast(nc.name + &quot; added - portal link sent via Make.com&quot;);
+}
+
+function cm(id) { document.getElementById(id).classList.remove(&quot;open&quot;); }
+
+function toast(msg) {
+  var c = document.getElementById(&quot;tc&quot;);
+  var t = document.createElement(&quot;div&quot;);
+  t.className = &quot;toast&quot;;
+  t.innerHTML = &quot;<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' style='width:14px;height:14px;flex-shrink:0'><polyline points='20 6 9 17 4 12'/></svg><span>&quot; + msg + &quot;</span>&quot;;
+  c.appendChild(t);
+  setTimeout(function() { t.classList.add(&quot;rm&quot;); setTimeout(function() { t.remove(); }, 200); }, 3500);
+}
+
+function cs(name) { toast(name + &quot; - coming in next release&quot;); }
+
+document.getElementById(&quot;btn-addclient&quot;).addEventListener(&quot;click&quot;, openAddClient);
+document.getElementById(&quot;btn-allwb&quot;).addEventListener(&quot;click&quot;, sendAllWB);
+document.getElementById(&quot;btn-addcust&quot;).addEventListener(&quot;click&quot;, addCust);
+document.getElementById(&quot;btn-saveclient&quot;).addEventListener(&quot;click&quot;, saveClient);
+document.getElementById(&quot;cai&quot;).addEventListener(&quot;keydown&quot;, function(e) { if (e.key === &quot;Enter&quot;) { addCust(); e.preventDefault(); } });
+
+renderA();
+renderI();
+</script>
+<script>
+(function(){
+  const r = document.documentElement;
+  r.setAttribute('data-theme', 'dark');
+  const btn = document.querySelector('[data-theme-toggle]');
+  if (!btn) return;
+  const moon = '<svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><path d=&quot;M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z&quot;/></svg>';
+  const sun = '<svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;5&quot;/><path d=&quot;M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42&quot;/></svg>';
+  let theme = 'dark';
+  btn.innerHTML = sun;
+  btn.addEventListener('click', () => {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    r.setAttribute('data-theme', theme);
+    btn.innerHTML = theme === 'dark' ? sun : moon;
+  });
+})();
+</script></body>
+</html>" frameborder="0" class="demo-iframe" id="iframe-clients"></iframe>
+    </div>
+
+    <div class="screen-panel" id="screen-portal">
+      <iframe srcdoc="<!DOCTYPE html>
+
+<html data-theme=&quot;dark&quot; lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;utf-8&quot;/>
+<meta content=&quot;width=device-width, initial-scale=1.0&quot; name=&quot;viewport&quot;/>
+<title>JauraTax — Upload Your Documents</title>
+<link href=&quot;https://fonts.googleapis.com&quot; rel=&quot;preconnect&quot;/>
+<link crossorigin=&quot;&quot; href=&quot;https://fonts.gstatic.com&quot; rel=&quot;preconnect&quot;/>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@300..700&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;/>
+<style>
+  :root,[data-theme=&quot;light&quot;]{
+    --color-bg:#f7f6f2;--color-surface:#f9f8f5;
+    --color-surface-offset:#f3f0ec;--color-surface-dynamic:#e6e4df;
+    --color-divider:#dcd9d5;--color-border:#d4d1ca;
+    --color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;
+    --color-primary:#01696f;--color-primary-hover:#0c4e54;
+    --color-primary-highlight:#cedcd8;
+    --color-success:#437a22;--color-success-highlight:#d4dfcc;
+    --color-error:#a12c7b;--color-error-highlight:#e0ced7;
+    --color-warning:#964219;--color-warning-highlight:#ddcfc6;
+    --radius-sm:0.375rem;--radius-md:0.5rem;--radius-lg:0.75rem;
+    --radius-xl:1rem;--radius-full:9999px;
+    --shadow-sm:0 1px 2px oklch(0.2 0.01 80/0.06);
+    --shadow-md:0 4px 16px oklch(0.2 0.01 80/0.10);
+    --shadow-lg:0 8px 32px oklch(0.2 0.01 80/0.12);
+    --text-xs:0.75rem;--text-sm:0.875rem;--text-base:1rem;
+    --text-lg:1.125rem;--text-xl:1.375rem;--text-2xl:1.75rem;
+    --font-body:'Inter','Helvetica Neue',sans-serif;
+    --transition:180ms cubic-bezier(0.16,1,0.3,1);
+  }
+  [data-theme=&quot;dark&quot;]{
+    --color-bg:#171614;--color-surface:#1c1b19;
+    --color-surface-offset:#242320;--color-surface-dynamic:#2d2c2a;
+    --color-divider:#262523;--color-border:#393836;
+    --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+    --color-primary:#4f98a3;--color-primary-hover:#227f8b;
+    --color-primary-highlight:#1e3133;
+    --color-success:#6daa45;--color-success-highlight:#2a3a22;
+    --color-error:#d163a7;--color-error-highlight:#3a2030;
+    --color-warning:#bb653b;--color-warning-highlight:#3a2a1e;
+    --shadow-sm:0 1px 2px oklch(0 0 0/0.25);
+    --shadow-md:0 4px 16px oklch(0 0 0/0.35);
+    --shadow-lg:0 8px 32px oklch(0 0 0/0.4);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:var(--color-bg);min-height:100dvh;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 3rem}
+  button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+
+  /* LAYOUT */
+  .page{width:100%;display:flex;flex-direction:column;gap:1.25rem}
+
+  /* HEADER BAR */
+  .topbar{display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 0 0.5rem;margin-bottom:0.25rem}
+  .logo-row{display:flex;align-items:center;gap:0.5rem}
+  .logo-name{font-size:var(--text-base);font-weight:700;letter-spacing:-.02em}
+  .secure-badge{display:inline-flex;align-items:center;gap:4px;font-size:var(--text-xs);font-weight:600;color:var(--color-success);background:var(--color-success-highlight);padding:3px 10px;border-radius:var(--radius-full)}
+  .secure-badge svg{width:12px;height:12px}
+
+  /* GREETING CARD */
+  .greeting-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:1.5rem;box-shadow:var(--shadow-sm)}
+  .greeting-eyebrow{font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:0.5rem}
+  .greeting-name{font-size:var(--text-2xl);font-weight:700;letter-spacing:-.03em;margin-bottom:0.5rem}
+  .greeting-sub{font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.6}
+  .cpa-row{display:flex;align-items:center;gap:0.625rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--color-divider)}
+  .cpa-avatar{width:28px;height:28px;border-radius:var(--radius-full);background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:700;flex-shrink:0}
+  .cpa-info{font-size:var(--text-xs);color:var(--color-text-muted)}
+  .cpa-info strong{color:var(--color-text);font-weight:600}
+
+  /* DOCS NEEDED */
+  .section-title{font-size:var(--text-sm);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-muted);margin-bottom:0.75rem}
+  .doc-list{display:flex;flex-direction:column;gap:0.5rem}
+  .doc-item{display:flex;align-items:center;justify-content:space-between;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:0.75rem 1rem;transition:border-color var(--transition),background var(--transition)}
+  .doc-item.uploaded{border-color:var(--color-success);background:var(--color-success-highlight)}
+  .doc-item-left{display:flex;align-items:center;gap:0.625rem}
+  .doc-icon{width:32px;height:32px;border-radius:var(--radius-md);background:var(--color-error-highlight);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background var(--transition)}
+  .doc-item.uploaded .doc-icon{background:var(--color-success-highlight)}
+  .doc-icon svg{width:15px;height:15px;color:var(--color-error);transition:color var(--transition)}
+  .doc-item.uploaded .doc-icon svg{color:var(--color-success)}
+  .doc-name{font-size:var(--text-sm);font-weight:600}
+  .doc-desc{font-size:var(--text-xs);color:var(--color-text-muted);margin-top:1px}
+  .doc-status{font-size:var(--text-xs);font-weight:600}
+  .doc-status.pending{color:var(--color-error)}
+  .doc-status.done{color:var(--color-success)}
+
+  /* UPLOAD ZONE */
+  .upload-zone{background:var(--color-surface);border:2px dashed var(--color-border);border-radius:var(--radius-xl);padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;cursor:pointer;transition:border-color var(--transition),background var(--transition);text-align:center;position:relative;overflow:hidden}
+  .upload-zone:hover,.upload-zone.dragging{border-color:var(--color-primary);background:var(--color-primary-highlight)}
+  .upload-zone.dragging{transform:scale(1.01)}
+  .upload-icon{width:44px;height:44px;border-radius:var(--radius-full);background:var(--color-primary-highlight);display:flex;align-items:center;justify-content:center}
+  .upload-icon svg{width:20px;height:20px;color:var(--color-primary)}
+  .upload-title{font-size:var(--text-base);font-weight:700}
+  .upload-sub{font-size:var(--text-sm);color:var(--color-text-muted)}
+  .upload-hint{font-size:var(--text-xs);color:var(--color-text-faint)}
+  .upload-input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+  /* FILE QUEUE */
+  .file-queue{display:flex;flex-direction:column;gap:0.5rem}
+  .file-item{display:flex;align-items:center;gap:0.75rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:0.75rem 1rem}
+  .file-thumb{width:36px;height:36px;border-radius:var(--radius-md);background:var(--color-primary-highlight);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .file-thumb svg{width:16px;height:16px;color:var(--color-primary)}
+  .file-info{flex:1;min-width:0}
+  .file-name{font-size:var(--text-sm);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .file-size{font-size:var(--text-xs);color:var(--color-text-muted)}
+  .file-remove{width:28px;height:28px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;color:var(--color-text-faint);flex-shrink:0}
+  .file-remove:hover{background:var(--color-error-highlight);color:var(--color-error)}
+  .file-remove svg{width:14px;height:14px}
+
+  /* SUBMIT BTN */
+  .btn-submit{width:100%;padding:0.875rem;background:var(--color-primary);color:#fff;border-radius:var(--radius-lg);font-size:var(--text-base);font-weight:700;cursor:pointer;border:none;transition:background var(--transition),box-shadow var(--transition),transform 80ms;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+  .btn-submit:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-md)}
+  .btn-submit:active{transform:scale(0.98)}
+  .btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn-submit svg{width:18px;height:18px}
+
+  /* SUCCESS STATE */
+  .success-screen{display:none;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;padding:2rem 0}
+  .success-icon{width:72px;height:72px;border-radius:var(--radius-full);background:var(--color-success-highlight);display:flex;align-items:center;justify-content:center;animation:popIn 400ms cubic-bezier(0.16,1,0.3,1)}
+  .success-icon svg{width:32px;height:32px;color:var(--color-success)}
+  .success-title{font-size:var(--text-2xl);font-weight:700;letter-spacing:-.03em}
+  .success-sub{font-size:var(--text-sm);color:var(--color-text-muted);max-width:320px;line-height:1.6}
+  .success-note{font-size:var(--text-xs);color:var(--color-text-faint);background:var(--color-surface-offset);border-radius:var(--radius-lg);padding:0.75rem 1rem;width:100%}
+  @keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* PROGRESS BAR */
+  .progress-wrap{width:100%;height:4px;background:var(--color-border);border-radius:var(--radius-full);overflow:hidden;display:none}
+  .progress-bar{height:100%;background:var(--color-primary);border-radius:var(--radius-full);transition:width 50ms linear}
+
+  /* FOOTER */
+  .page-footer{font-size:var(--text-xs);color:var(--color-text-faint);text-align:center;padding-top:0.5rem}
+  .page-footer a{color:var(--color-text-muted);text-decoration:none}
+  .page-footer a:hover{color:var(--color-text)}
+</style>
+<style>.page,.topbar{max-width:100% !important;width:100% !important;} body{display:flex;justify-content:center;}</style></head>
+<body>
+<div class=&quot;topbar&quot;>
+<div class=&quot;logo-row&quot;>
+<svg fill=&quot;none&quot; height=&quot;28&quot; viewbox=&quot;0 0 32 32&quot; width=&quot;28&quot;>
+<rect fill=&quot;var(--color-primary)&quot; height=&quot;32&quot; rx=&quot;8&quot; width=&quot;32&quot;></rect>
+<path d=&quot;M8 10h16&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path>
+<path d=&quot;M12 10v10&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-width=&quot;2&quot;></path>
+<circle cx=&quot;21&quot; cy=&quot;21&quot; r=&quot;4&quot; stroke=&quot;white&quot; stroke-width=&quot;1.5&quot;></circle>
+<path d=&quot;M19.5 21l1 1 2-2&quot; stroke=&quot;white&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;1.5&quot;></path>
+</svg>
+<span class=&quot;logo-name&quot;>JauraTax</span>
+</div>
+<span class=&quot;secure-badge&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><rect height=&quot;11&quot; rx=&quot;2&quot; width=&quot;18&quot; x=&quot;3&quot; y=&quot;11&quot;></rect><path d=&quot;M7 11V7a5 5 0 0 1 10 0v4&quot;></path></svg>
+    256-bit Encrypted
+  </span>
+</div>
+<div class=&quot;page&quot; id=&quot;main-page&quot;>
+<!-- GREETING -->
+<div class=&quot;greeting-card&quot;>
+<div class=&quot;greeting-eyebrow&quot;>Action Required</div>
+<div class=&quot;greeting-name&quot;>Hi, Raj 👋</div>
+<div class=&quot;greeting-sub&quot;>Your accountant needs a few documents to complete your 2025 tax return. Please upload them below — it only takes 2 minutes.</div>
+<div class=&quot;cpa-row&quot;>
+<div class=&quot;cpa-avatar&quot;>JA</div>
+<div class=&quot;cpa-info&quot;>Requested by <strong>Jaura CPA</strong> · Jaura Automation</div>
+</div>
+</div>
+<!-- DOCUMENTS NEEDED -->
+<div>
+<div class=&quot;section-title&quot;>Documents Needed</div>
+<div class=&quot;doc-list&quot; id=&quot;doc-list&quot;>
+<div class=&quot;doc-item&quot; id=&quot;doc-t4&quot;>
+<div class=&quot;doc-item-left&quot;>
+<div class=&quot;doc-icon&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z&quot;></path><polyline points=&quot;14 2 14 8 20 8&quot;></polyline></svg>
+</div>
+<div>
+<div class=&quot;doc-name&quot;>T4 Slip – Employment Income</div>
+<div class=&quot;doc-desc&quot;>From your employer for tax year 2025</div>
+</div>
+</div>
+<span class=&quot;doc-status pending&quot; id=&quot;doc-t4-status&quot;>Missing</span>
+</div>
+<div class=&quot;doc-item&quot; id=&quot;doc-noa&quot;>
+<div class=&quot;doc-item-left&quot;>
+<div class=&quot;doc-icon&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><path d=&quot;M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z&quot;></path><polyline points=&quot;14 2 14 8 20 8&quot;></polyline></svg>
+</div>
+<div>
+<div class=&quot;doc-name&quot;>Notice of Assessment (NOA) 2024</div>
+<div class=&quot;doc-desc&quot;>From CRA — last year's tax assessment</div>
+</div>
+</div>
+<span class=&quot;doc-status pending&quot; id=&quot;doc-noa-status&quot;>Missing</span>
+</div>
+</div>
+</div>
+<!-- UPLOAD ZONE -->
+<div>
+<div class=&quot;section-title&quot;>Upload Files</div>
+<div class=&quot;upload-zone&quot; id=&quot;upload-zone&quot; onclick=&quot;document.getElementById('file-input').click()&quot; ondragleave=&quot;handleDragLeave(event)&quot; ondragover=&quot;handleDragOver(event)&quot; ondrop=&quot;handleDrop(event)&quot;>
+<div class=&quot;upload-icon&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;16 16 12 12 8 16&quot;></polyline><line x1=&quot;12&quot; x2=&quot;12&quot; y1=&quot;12&quot; y2=&quot;21&quot;></line><path d=&quot;M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3&quot;></path></svg>
+</div>
+<div class=&quot;upload-title&quot;>Tap to upload or drag files here</div>
+<div class=&quot;upload-sub&quot;>T4 slips, NOA, receipts, or any requested document</div>
+<div class=&quot;upload-hint&quot;>PDF, JPG, PNG — Max 20MB per file</div>
+<input accept=&quot;.pdf,.jpg,.jpeg,.png&quot; class=&quot;upload-input&quot; id=&quot;file-input&quot; multiple=&quot;&quot; onchange=&quot;handleFiles(this.files)&quot; type=&quot;file&quot;/>
+</div>
+</div>
+<!-- PROGRESS BAR -->
+<div class=&quot;progress-wrap&quot; id=&quot;progress-wrap&quot;>
+<div class=&quot;progress-bar&quot; id=&quot;progress-bar&quot; style=&quot;width:0%&quot;></div>
+</div>
+<!-- FILE QUEUE -->
+<div class=&quot;file-queue&quot; id=&quot;file-queue&quot;></div>
+<!-- SUBMIT -->
+<button class=&quot;btn-submit&quot; disabled=&quot;&quot; id=&quot;submit-btn&quot; onclick=&quot;submitDocs()&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;20 6 9 17 4 12&quot;></polyline></svg>
+    Submit Documents to Jaura CPA
+  </button>
+<div class=&quot;page-footer&quot;>
+    Your files are encrypted end-to-end and only accessible by your CPA.<br/>
+    Powered by <a href=&quot;#&quot;>JauraTax</a>  ·  <a href=&quot;#&quot;>Privacy Policy</a>
+</div>
+</div>
+<!-- SUCCESS SCREEN -->
+<div class=&quot;success-screen&quot; id=&quot;success-screen&quot;>
+<div class=&quot;success-icon&quot;>
+<svg fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; viewbox=&quot;0 0 24 24&quot;><polyline points=&quot;20 6 9 17 4 12&quot;></polyline></svg>
+</div>
+<div class=&quot;success-title&quot;>Documents Submitted!</div>
+<div class=&quot;success-sub&quot;>Your files have been securely delivered to <strong>Jaura CPA</strong>. He will review them and follow up if anything else is needed.</div>
+<div class=&quot;success-note&quot;>
+    📬  You will receive an email confirmation at <strong>raj.patel@hotmail.com</strong><br/><br/>
+    ✅  Your CPA has been notified and your file is now ready to process.
+  </div>
+<button class=&quot;btn-submit&quot; onclick=&quot;resetDemo()&quot; style=&quot;max-width:280px&quot;>← Upload More Documents</button>
+</div>
+<script>
+let fileQueue = [];
+
+function handleFiles(files) {
+  Array.from(files).forEach(file => {
+    if (!fileQueue.find(f => f.name === file.name)) {
+      fileQueue.push(file);
+    }
+  });
+  renderQueue();
+  updateSubmitBtn();
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.add('dragging');
+}
+function handleDragLeave(e) {
+  document.getElementById('upload-zone').classList.remove('dragging');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('dragging');
+  handleFiles(e.dataTransfer.files);
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function renderQueue() {
+  const container = document.getElementById('file-queue');
+  if (!fileQueue.length) { container.innerHTML = ''; return; }
+  container.innerHTML = fileQueue.map((f, i) => `
+    <div class=&quot;file-item&quot; id=&quot;fq-${i}&quot;>
+      <div class=&quot;file-thumb&quot;>
+        <svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><path d=&quot;M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z&quot;/><polyline points=&quot;14 2 14 8 20 8&quot;/></svg>
+      </div>
+      <div class=&quot;file-info&quot;>
+        <div class=&quot;file-name&quot;>${f.name}</div>
+        <div class=&quot;file-size&quot;>${formatSize(f.size || Math.floor(Math.random()*500+100)*1024)}</div>
+      </div>
+      <button class=&quot;file-remove&quot; onclick=&quot;removeFile(${i})&quot; aria-label=&quot;Remove file&quot;>
+        <svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;><line x1=&quot;18&quot; y1=&quot;6&quot; x2=&quot;6&quot; y2=&quot;18&quot;/><line x1=&quot;6&quot; y1=&quot;6&quot; x2=&quot;18&quot; y2=&quot;18&quot;/></svg>
+      </button>
+    </div>`).join('');
+}
+
+function removeFile(index) {
+  fileQueue.splice(index, 1);
+  renderQueue();
+  updateSubmitBtn();
+}
+
+function updateSubmitBtn() {
+  document.getElementById('submit-btn').disabled = fileQueue.length === 0;
+}
+
+function submitDocs() {
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; style=&quot;width:18px;height:18px;animation:spin 1s linear infinite&quot;><path d=&quot;M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0&quot;/></svg> Uploading securely...`;
+
+  // Show progress bar
+  const pw = document.getElementById('progress-wrap');
+  const pb = document.getElementById('progress-bar');
+  pw.style.display = 'block';
+
+  let prog = 0;
+  const tick = setInterval(() => {
+    prog = Math.min(prog + Math.random() * 18 + 8, 95);
+    pb.style.width = prog + '%';
+  }, 200);
+
+  setTimeout(() => {
+    clearInterval(tick);
+    pb.style.width = '100%';
+    // Mark docs as uploaded
+    markDocUploaded('doc-t4', 'doc-t4-status');
+    markDocUploaded('doc-noa', 'doc-noa-status');
+    setTimeout(showSuccess, 400);
+  }, 2200);
+}
+
+function markDocUploaded(itemId, statusId) {
+  const item = document.getElementById(itemId);
+  const status = document.getElementById(statusId);
+  if (item) item.classList.add('uploaded');
+  if (status) { status.textContent = 'Uploaded ✓'; status.className = 'doc-status done'; }
+}
+
+function showSuccess() {
+  document.getElementById('main-page').style.display = 'none';
+  const s = document.getElementById('success-screen');
+  s.style.display = 'flex';
+}
+
+function resetDemo() {
+  fileQueue = [];
+  document.getElementById('main-page').style.display = 'flex';
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('file-queue').innerHTML = '';
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('submit-btn').innerHTML = `<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.5&quot; style=&quot;width:18px;height:18px&quot;><polyline points=&quot;20 6 9 17 4 12&quot;/></svg> Submit Documents to Jaura CPA`;
+  document.getElementById('doc-t4').classList.remove('uploaded');
+  document.getElementById('doc-noa').classList.remove('uploaded');
+  document.getElementById('doc-t4-status').textContent = 'Missing'; document.getElementById('doc-t4-status').className = 'doc-status pending';
+  document.getElementById('doc-noa-status').textContent = 'Missing'; document.getElementById('doc-noa-status').className = 'doc-status pending';
+}
+
+// Spin keyframe
+const style = document.createElement('style');
+style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+document.head.appendChild(style);
+</script>
+</body>
+</html>" frameborder="0" class="demo-iframe" id="iframe-portal"></iframe>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function showScreen(key) {
+    document.querySelectorAll('.screen-panel').forEach(el => {
+      el.classList.remove('active');
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+
+    const panel = document.getElementById('screen-' + key);
+    if (panel) { panel.style.display = 'block'; panel.classList.add('active'); }
+
+    const tab = document.getElementById('tab-' + key);
+    if (tab) tab.classList.add('active');
+  }
+
+  // Keyboard shortcuts: 1-4 to switch screens
+  const screenKeys = ['dashboard', 'reminders', 'clients', 'portal'];
+  document.addEventListener('keydown', e => {
+    const n = parseInt(e.key);
+    if (n >= 1 && n <= 4) showScreen(screenKeys[n - 1]);
+  });
+
+  showScreen('dashboard');
+</script>
+</body>
+</html>
